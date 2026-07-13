@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Questões · Malu</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -259,6 +260,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--gray-900);m
 .artigo-q-text{font-size:13.5px;color:var(--gray-800);line-height:1.65}
 
 
+/* ══ SYNC MODAL ═══════════════════════════════════════════ */
+.sync-modal{max-width:360px;text-align:center}
+.sync-qr-wrap{display:flex;justify-content:center;margin:1.25rem 0;padding:1rem;background:#fff;border-radius:12px;border:1.5px solid var(--violet-200)}
+.sync-code{font-family:monospace;font-size:13px;color:var(--violet);background:var(--violet-50);padding:8px 16px;border-radius:8px;border:1.5px solid var(--violet-200);margin:.75rem 0;word-break:break-all;letter-spacing:.04em}
+.sync-divider{display:flex;align-items:center;gap:10px;margin:1rem 0;color:var(--gray-300);font-size:12px}
+.sync-divider::before,.sync-divider::after{content:'';flex:1;height:1px;background:var(--gray-200)}
+
 /* ══ QUESTOES NEW LAYOUT ════════════════════════════════════ */
 .q-result-banner{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;font-size:15px;font-weight:700;margin-bottom:1rem;font-family:'Plus Jakarta Sans',sans-serif}
 .q-result-banner.correct{background:var(--green-100);color:var(--green-600);border:1.5px solid var(--green-400)}
@@ -348,7 +356,11 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--gray-900);m
 .note-modal-overlay.open{display:flex}
 .note-modal{background:#fff;border-radius:1.25rem;padding:1.5rem;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(124,58,237,.2)}
 .note-modal-title{font-size:15px;font-weight:700;color:var(--gray-900);margin-bottom:1rem;font-family:'Plus Jakarta Sans',sans-serif}
-.note-toolbar{display:flex;flex-wrap:wrap;gap:4px;padding:.5rem;background:var(--bg);border:1px solid var(--violet-200);border-radius:.75rem .75rem 0 0;border-bottom:none}
+.note-toolbar{padding:.5rem;background:var(--bg);border:1px solid var(--violet-200);border-radius:.75rem .75rem 0 0;border-bottom:none}
+.note-tb-row{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.note-tb-color-wrap{display:inline-flex;align-items:center;gap:2px;padding:3px 6px;border-radius:.4rem;cursor:pointer;border:1px solid var(--violet-100);background:#fff;transition:all .12s}
+.note-tb-color-wrap:hover{background:var(--violet-100)}
+.note-tb-select{padding:3px 6px;border-radius:.4rem;border:1px solid var(--violet-200);font-size:11.5px;font-family:'Inter',sans-serif;color:var(--gray-600);outline:none;cursor:pointer;background:#fff}
 .note-tb-btn{padding:4px 8px;border:none;background:transparent;border-radius:.4rem;font-size:13px;cursor:pointer;color:var(--gray-600);font-family:'Inter',sans-serif;line-height:1.4;min-width:28px;text-align:center;transition:all .12s}
 .note-tb-btn:hover{background:var(--violet-100);color:var(--violet)}
 .note-tb-btn.active{background:var(--violet);color:#fff}
@@ -359,6 +371,10 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--gray-900);m
 .note-special-btn.important{background:#FEE2E2;color:#DC2626}
 .note-special-btn.tip{background:#FEF9C3;color:#854D0E}
 .note-special-btn.law{background:#DCFCE7;color:#166534}
+.note-special-btn.warning{background:#FEF3C7;color:#92400E}
+.note-special-btn.memorize{background:#E0E7FF;color:#3730A3}
+.note-special-btn.reviewed{background:#D1FAE5;color:#065F46}
+.note-special-btn.error{background:#FFE4E6;color:#9F1239}
 .note-editor-area{min-height:140px;padding:.75rem 1rem;border:1.5px solid var(--violet-200);border-radius:0 0 .75rem .75rem;font-family:'Inter',sans-serif;font-size:13.5px;color:var(--gray-700);outline:none;line-height:1.7;background:#fff}
 .note-editor-area:focus{border-color:var(--violet)}
 .note-editor-area[placeholder]:empty:before{content:attr(placeholder);color:var(--gray-300);pointer-events:none}
@@ -375,6 +391,13 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--gray-900);m
 .note-editor-area .tag-important{background:#FEE2E2;color:#DC2626;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
 .note-editor-area .tag-tip{background:#FEF9C3;color:#854D0E;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
 .note-editor-area .tag-law{background:#DCFCE7;color:#166534;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
+.note-editor-area .tag-warning{background:#FEF3C7;color:#92400E;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
+.note-editor-area .tag-memorize{background:#E0E7FF;color:#3730A3;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
+.note-editor-area .tag-reviewed{background:#D1FAE5;color:#065F46;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
+.note-editor-area .tag-error{background:#FFE4E6;color:#9F1239;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
+.note-editor-area blockquote{border-left:3px solid var(--violet-300);padding:.4rem .75rem;margin:.4rem 0;background:var(--violet-50);border-radius:0 8px 8px 0;font-style:italic;color:var(--gray-600)}
+.note-editor-area code{background:var(--gray-100);padding:1px 6px;border-radius:4px;font-family:monospace;font-size:12px;color:var(--violet-dark)}
+.note-editor-area hr{border:none;border-top:2px solid var(--violet-200);margin:.6rem 0}
 .note-modal-actions{display:flex;gap:8px;margin-top:1rem}
 .note-display-rich{margin-top:.75rem;padding:.75rem 1rem;background:var(--violet-100);border-radius:.75rem;font-size:13px;color:var(--gray-700);line-height:1.7;border:1px solid var(--violet-200)}
 .note-display-rich .tag-doubt{background:#EDE9FE;color:#7C3AED;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700;margin-right:4px}
@@ -402,7 +425,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--gray-900);m
 <!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
 <aside id="sidebar">
   <div style="position:absolute;bottom:1rem;left:0;right:0;padding:0 1rem">
-    <button onclick="syncPull().then(()=>location.reload())" style="width:100%;padding:8px;border-radius:20px;border:1.5px solid var(--violet-200);background:var(--violet-50);color:var(--violet);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">⟳ Sincronizar agora</button>
+    <button onclick="syncPull().then(()=>{ renderHome(); })" style="width:100%;padding:8px;border-radius:20px;border:1.5px solid var(--violet-200);background:var(--violet-50);color:var(--violet);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;margin-bottom:6px">⟳ Sincronizar agora</button>
+  <button onclick="openSyncModal()" style="width:100%;padding:8px;border-radius:20px;border:1.5px solid var(--violet-300);background:var(--violet);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">📱 Vincular dispositivo</button>
   </div>
   <div class="sb-brand">
     <div class="sb-brand-mark"></div>
@@ -1458,7 +1482,26 @@ function noteCmd(cmd, val){
 }
 function insertTag(label, cls){
   document.getElementById('note-editor').focus();
-  document.execCommand('insertHTML', false, `<span class="tag-${cls}">${label}</span>&nbsp;`);
+  document.execCommand('insertHTML', false, '<span class="tag-'+cls+'">'+label+'</span>&nbsp;');
+}
+function noteFontSize(size){
+  if(!size) return;
+  document.getElementById('note-editor').focus();
+  document.execCommand('fontSize', false, size);
+}
+function insertBlockquote(){
+  document.getElementById('note-editor').focus();
+  document.execCommand('insertHTML', false, '<blockquote>Citação...</blockquote><br>');
+}
+function insertDivider(){
+  document.getElementById('note-editor').focus();
+  document.execCommand('insertHTML', false, '<hr>');
+}
+function insertInlineCode(){
+  document.getElementById('note-editor').focus();
+  const sel = window.getSelection();
+  const text = sel && sel.toString() ? sel.toString() : 'código';
+  document.execCommand('insertHTML', false, '<code>'+text+'</code>&nbsp;');
 }
 function answerQ(id, val){
   if(st.answers[id]!==undefined) return;
@@ -2035,14 +2078,96 @@ function esc(s){ return (s||'').replace(/['"&<>]/g,c=>({'\'':'&#39;','"':'&quot;
    INIT
 ══════════════════════════════════════════ */
 
+/* ══ DEVICE SYNC ═══════════════════════════════════════════ */
+function showMyCode(){
+  document.getElementById('modal-sync').classList.add('open');
+  document.getElementById('sync-tab-mycode').click();
+}
+function showLinkCode(){
+  document.getElementById('modal-sync').classList.add('open');
+  document.getElementById('sync-tab-link').click();
+}
+function openSyncModal(){ showMyCode(); }
+function openSyncModal_old(){
+  document.getElementById('modal-sync').classList.add('open');
+  const code = USER_ID;
+  document.getElementById('sync-code-display').textContent = code;
+  // Generate QR code pointing to a URL with the code embedded
+  const qrEl = document.getElementById('sync-qr-code');
+  qrEl.innerHTML = '';
+  // QR encodes the user ID so the tablet can read it
+  const linkUrl = window.location.href.split('?')[0] + '?link=' + encodeURIComponent(code);
+  new QRCode(qrEl, {
+    text: linkUrl,
+    width: 180,
+    height: 180,
+    colorDark: '#7C3AED',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+}
+
+function switchSyncTab(tab){
+  const isMyCode = tab === 'mycode';
+  document.getElementById('sync-panel-mycode').style.display = isMyCode ? 'block' : 'none';
+  document.getElementById('sync-panel-link').style.display = isMyCode ? 'none' : 'block';
+  const btnMy = document.getElementById('sync-tab-mycode');
+  const btnLink = document.getElementById('sync-tab-link');
+  btnMy.style.background = isMyCode ? 'var(--violet)' : 'transparent';
+  btnMy.style.color = isMyCode ? '#fff' : 'var(--violet)';
+  btnMy.style.borderColor = 'var(--violet)';
+  btnLink.style.background = isMyCode ? 'transparent' : 'var(--violet)';
+  btnLink.style.color = isMyCode ? 'var(--violet)' : '#fff';
+  btnLink.style.borderColor = 'var(--violet)';
+  if(isMyCode){
+    // Generate QR
+    const qrEl = document.getElementById('sync-qr-code');
+    qrEl.innerHTML = '';
+    try{
+      new QRCode(qrEl, {text:USER_ID,width:180,height:180,colorDark:'#7C3AED',colorLight:'#ffffff',correctLevel:QRCode.CorrectLevel.M});
+    }catch(e){ qrEl.textContent = USER_ID; }
+    // Also show the code as text below QR
+    const codeEl = document.getElementById('sync-code-display');
+    if(codeEl) codeEl.textContent = USER_ID;
+  }
+}
+function applyLinkedCode(){
+  const input = document.getElementById('sync-code-input').value.trim();
+  const msg = document.getElementById('sync-link-msg');
+  const cleaned = input.replace(/\s/g,''); if(!cleaned){ msg.style.color='var(--red-600)'; msg.textContent='Digite o código primeiro.'; msg.style.display='block'; return; } const input2 = cleaned;
+  if(!input2.startsWith('u_')){ msg.style.color='var(--red-600)'; msg.textContent='Código inválido. Deve começar com u_'; msg.style.display='block'; return; }
+  localStorage.setItem('malu_uid', input2 || input);
+  msg.style.color='var(--green-600)'; msg.textContent='✓ Vinculado! Sincronizando dados...'; msg.style.display='block';
+  setTimeout(()=>{
+    closeModal('modal-sync');
+    location.reload();
+  }, 1500);
+}
+
+// Check if opened via QR code link
+(function checkQrLink(){
+  const params = new URLSearchParams(window.location.search);
+  const link = params.get('link');
+  if(link && link.startsWith('u_')){
+    const current = localStorage.getItem('malu_uid');
+    if(current !== link){
+      if(confirm('Vincular este dispositivo ao código:\n' + link + '\n\nClique OK para sincronizar.')){
+        localStorage.setItem('malu_uid', link);
+        window.history.replaceState({}, '', window.location.pathname);
+        location.reload();
+      }
+    }
+  }
+})();
+
 /* ══ SUPABASE SYNC ══════════════════════════════════════════ */
 const SB_URL = 'https://usgsgxxzdbukghhnrjla.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzZ3NneHh6ZGJ1a2doaG5yamxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzODg2MzAsImV4cCI6MjA5Nzk2NDYzMH0.LGUnTmNZ97nUT9jW8Lh69cJmZjyD4rUqF1QKsamDk7w';
 
 function getUserId(){
-  let uid = localStorage.getItem('malu_uid');
-  if(!uid){ uid='u_'+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('malu_uid',uid); }
-  return uid;
+  const FIXED_ID = 'u_ux7zw0rbnrpmrjouqm5';
+  localStorage.setItem('malu_uid', FIXED_ID);
+  return FIXED_ID;
 }
 const USER_ID = getUserId();
 
@@ -2226,6 +2351,138 @@ syncPull().then(()=>navTo('inicio'));
     <div class="modal-actions">
       <button class="btn-modal-primary" onclick="doArtigoAddManual()">Salvar tópico</button>
       <button class="btn-modal-ghost" onclick="closeModal('modal-artigo-add')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTE MODAL -->
+<div class="modal-overlay" id="modal-note" onclick="closeNoteModalOutside(event)">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-title">Anotação para revisão</div>
+    <div class="note-toolbar">
+      <!-- Row 1: history + headings + basic format -->
+      <div class="note-tb-row">
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('undo')" title="Desfazer">↩</button>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('redo')" title="Refazer">↪</button>
+        <div class="note-tb-sep"></div>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('formatBlock','h1')" title="Título 1"><b>H1</b></button>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('formatBlock','h2')" title="Título 2"><b>H2</b></button>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('formatBlock','h3')" title="Título 3"><b>H3</b></button>
+        <div class="note-tb-sep"></div>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('bold')" title="Negrito"><b>B</b></button>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('italic')" title="Itálico"><i>I</i></button>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('underline')" title="Sublinhado"><u>U</u></button>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('strikeThrough')" title="Tachado"><s>S</s></button>
+        <div class="note-tb-sep"></div>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('insertUnorderedList')" title="Lista">≡</button>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('insertOrderedList')" title="Lista numerada">1.</button>
+        <div class="note-tb-sep"></div>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('justifyLeft')" title="Alinhar esquerda">⬛</button>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('justifyCenter')" title="Centralizar">▪</button>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();noteCmd('justifyRight')" title="Alinhar direita">▫</button>
+      </div>
+      <!-- Row 2: color + font size + blockquote + divider + code -->
+      <div class="note-tb-row" style="margin-top:4px">
+        <label class="note-tb-color-wrap" title="Cor do texto">
+          <span style="font-size:12px;font-weight:700;color:var(--gray-600)">A</span>
+          <input type="color" id="note-fg-color" value="#7C3AED" onchange="noteCmd('foreColor',this.value)" style="width:18px;height:18px;border:none;padding:0;cursor:pointer;background:transparent">
+        </label>
+        <label class="note-tb-color-wrap" title="Cor de fundo">
+          <span style="font-size:14px">🖊</span>
+          <input type="color" id="note-bg-color" value="#FEF08A" onchange="noteCmd('hiliteColor',this.value)" style="width:18px;height:18px;border:none;padding:0;cursor:pointer;background:transparent">
+        </label>
+        <div class="note-tb-sep"></div>
+        <select class="note-tb-select" onchange="noteFontSize(this.value)" title="Tamanho da fonte">
+          <option value="">Tamanho</option>
+          <option value="1">Pequeno</option>
+          <option value="3">Normal</option>
+          <option value="5">Grande</option>
+          <option value="7">Enorme</option>
+        </select>
+        <div class="note-tb-sep"></div>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();insertBlockquote()" title="Citação">❝</button>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();insertDivider()" title="Linha divisória">—</button>
+        <button class="note-tb-btn" onmousedown="event.preventDefault();insertInlineCode()" title="Código inline">&lt;/&gt;</button>
+      </div>
+    </div>
+    <!-- Tags row 1: original -->
+    <div class="note-special-btns">
+      <button class="note-special-btn doubt"    onmousedown="event.preventDefault();insertTag('dúvida','doubt')">❓ Dúvida</button>
+      <button class="note-special-btn important" onmousedown="event.preventDefault();insertTag('importante','important')">❗ Importante</button>
+      <button class="note-special-btn tip"      onmousedown="event.preventDefault();insertTag('dica','tip')">💡 Dica</button>
+      <button class="note-special-btn law"      onmousedown="event.preventDefault();insertTag('lei','law')">⚖️ Lei</button>
+    </div>
+    <!-- Tags row 2: new -->
+    <div class="note-special-btns" style="border-top:none;padding-top:0">
+      <button class="note-special-btn warning"  onmousedown="event.preventDefault();insertTag('atenção','warning')">⚠️ Atenção</button>
+      <button class="note-special-btn memorize" onmousedown="event.preventDefault();insertTag('memorizar','memorize')">📌 Memorizar</button>
+      <button class="note-special-btn reviewed" onmousedown="event.preventDefault();insertTag('revisado','reviewed')">✅ Revisado</button>
+      <button class="note-special-btn error"    onmousedown="event.preventDefault();insertTag('erro frequente','error')">❌ Erro frequente</button>
+    </div>
+    <div class="note-editor-area" id="note-editor" contenteditable="true" placeholder="Escreva sua anotação..."></div>
+    <div class="modal-actions">
+      <button class="btn-modal-primary" onclick="saveNoteModal()">Salvar anotação</button>
+      <button class="btn-modal-ghost" onclick="closeNoteModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- SYNC MODAL -->
+<div class="modal-overlay" id="modal-sync" onclick="closeModalOutside(event,'modal-sync')">
+  <div class="modal sync-modal">
+    <div class="modal-title">📱 Usar em outro dispositivo</div>
+
+    <!-- Tabs -->
+    <div style="display:flex;gap:6px;margin-bottom:1.25rem">
+      <button id="sync-tab-mycode" onclick="switchSyncTab('mycode')"
+        style="flex:1;padding:8px;border-radius:20px;border:1.5px solid var(--violet);background:var(--violet);color:#fff;font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">
+        🖥 Sou o PC
+      </button>
+      <button id="sync-tab-link" onclick="switchSyncTab('link')"
+        style="flex:1;padding:8px;border-radius:20px;border:1.5px solid var(--violet-200);background:transparent;color:var(--violet);font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">
+        📲 Sou o tablet/celular
+      </button>
+    </div>
+
+    <!-- Tab: PC — show QR -->
+    <div id="sync-panel-mycode">
+      <div style="font-size:13px;color:var(--gray-500);margin-bottom:1rem;line-height:1.6">
+        Abra o arquivo no tablet, clique em <strong>"Usar em outro dispositivo"</strong> → <strong>"Sou o tablet/celular"</strong> e escaneie o QR Code abaixo:
+      </div>
+      <div class="sync-qr-wrap">
+        <div id="sync-qr-code"></div>
+      </div>
+      <div class="sync-code" id="sync-code-display" style="margin-top:.75rem;font-size:13px;text-align:center"></div>
+      <div style="font-size:11px;color:var(--gray-400);text-align:center;margin-top:.4rem">Anote este código para digitar no tablet</div>
+    </div>
+
+    <!-- Tab: Tablet — paste code -->
+    <div id="sync-panel-link" style="display:none">
+      <div style="font-size:13px;color:var(--gray-500);margin-bottom:1rem;line-height:1.6">
+        No PC, abra o simulado e vá em <strong>"Usar em outro dispositivo"</strong> → <strong>"Sou o PC"</strong>. Você verá um QR Code — escaneie com a câmera ou copie o código e cole aqui:
+      </div>
+      <div style="margin-bottom:.75rem">
+        <label style="font-size:12px;font-weight:600;color:var(--gray-600);display:block;margin-bottom:5px">Cole o código do PC aqui:</label>
+        <div style="display:flex;gap:8px">
+          <input id="sync-code-input" type="text" placeholder="u_abc123..." 
+            style="flex:1;padding:9px 12px;border:1.5px solid var(--violet-200);border-radius:.75rem;font-size:13px;font-family:'Inter',sans-serif;outline:none">
+          <button onclick="applyLinkedCode()" 
+            style="padding:9px 18px;border-radius:.75rem;border:none;background:var(--violet);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">
+            Vincular
+          </button>
+        </div>
+      </div>
+      <div id="sync-link-msg" style="font-size:12px;margin-top:.5rem;display:none"></div>
+      <div style="font-size:12px;color:var(--amber-600);background:var(--amber-50);border:1px solid var(--amber-200);border-radius:10px;padding:10px 12px;margin-top:.75rem;line-height:1.6">
+        💡 <strong>Como fazer:</strong><br>
+        1. No PC, anote o código que aparece abaixo do QR<br>
+        2. Digite ou cole aqui no campo acima<br>
+        3. Clique em <strong>Vincular</strong>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:1.25rem">
+      <button class="btn-modal-ghost" onclick="closeModal('modal-sync')">Fechar</button>
     </div>
   </div>
 </div>
