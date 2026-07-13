@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questões · Malu</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F0EEFF;
+  --sidebar-bg:#F5F2FF;
+  --card:#fff;
+  --violet:#7C3AED;
+  --violet-dark:#6D28D9;
+  --violet-light:#8B5CF6;
+  --violet-100:#EDE9FE;
+  --violet-200:#DDD6FE;
+  --violet-300:#C4B5FD;
+  --gray-100:#F3F4F6;
+  --gray-200:#E5E7EB;
+  --gray-300:#D1D5DB;
+  --gray-400:#9CA3AF;
+  --gray-500:#6B7280;
+  --gray-600:#4B5563;
+  --gray-700:#374151;
+  --gray-900:#111827;
+  --green-50:#F0FDF4;
+  --green-100:#DCFCE7;
+  --green-400:#4ADE80;
+  --green-600:#16A34A;
+  --red-50:#FEF2F2;
+  --red-100:#FEE2E2;
+  --red-400:#F87171;
+  --red-600:#DC2626;
+  --amber-50:#FFFBEB;
+  --amber-200:#FDE68A;
+  --amber-600:#D97706;
+  --shadow-sm:0 1px 3px rgba(124,58,237,.08);
+  --shadow:0 2px 8px rgba(124,58,237,.1);
+  --radius:1rem;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--gray-900);min-height:100vh;display:flex}
+
+/* ══ SIDEBAR ══════════════════════════════════════════════════ */
+#sidebar{
+  width:260px;min-width:260px;background:var(--sidebar-bg);
+  border-right:1.5px solid var(--violet-200);
+  display:flex;flex-direction:column;
+  padding:1.5rem 0 2rem;
+  position:fixed;top:0;left:0;height:100vh;
+  overflow-y:auto;z-index:50;
+  transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+#sidebar.hidden{transform:translateX(-100%)}
+.sb-brand{display:flex;align-items:center;gap:10px;padding:0 1.25rem 1.5rem;border-bottom:1px solid var(--violet-200);margin-bottom:1.25rem}
+.sb-brand-mark{width:32px;height:32px;background:var(--violet);border-radius:10px;flex-shrink:0;position:relative}
+.sb-brand-mark::after{content:'';position:absolute;bottom:5px;right:5px;width:8px;height:8px;background:#fff;border-radius:3px}
+.sb-brand-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;color:var(--gray-900)}
+.sb-brand-sub{font-size:11px;color:var(--gray-400)}
+.sb-section{padding:0 1rem;margin-bottom:1.25rem}
+.sb-section-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:.5rem;padding:0 .25rem}
+.sb-link{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:.75rem;font-size:13.5px;font-weight:500;color:var(--gray-600);cursor:pointer;transition:all .15s;margin-bottom:2px}
+.sb-link:hover{background:var(--violet-100);color:var(--violet)}
+.sb-link.active{background:var(--violet-100);color:var(--violet);font-weight:600}
+.sb-link-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.sb-divider{height:1px;background:var(--violet-200);margin:.75rem 1rem}
+.sb-materias-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:.6rem;padding:0 1.25rem}
+.sb-materia{padding:.25rem 1.25rem}
+.sb-materia-name{font-size:13px;font-weight:700;color:var(--gray-700);padding:.35rem 0;cursor:pointer}
+.sb-norma{font-size:12.5px;color:var(--gray-500);padding:3px 8px;border-radius:.5rem;cursor:pointer;display:block;margin:1px 0;transition:all .12s}
+.sb-norma:hover{background:var(--violet-100);color:var(--violet)}
+.sb-norma.active{color:var(--violet);font-weight:600}
+.sb-add-assunto{font-size:12px;color:var(--violet);padding:3px 8px;cursor:pointer;opacity:.7;transition:opacity .15s}
+.sb-add-assunto:hover{opacity:1}
+.sb-add-materia{display:block;font-size:12px;color:var(--violet);padding:.4rem 1.25rem;cursor:pointer;opacity:.7;transition:opacity .15s;margin-top:.5rem}
+.sb-add-materia:hover{opacity:1}
+
+/* Sidebar toggle */
+#sb-toggle{position:fixed;top:1rem;left:1rem;z-index:100;width:36px;height:36px;border-radius:10px;border:1.5px solid var(--violet-200);background:var(--card);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:18px;color:var(--violet)}
+#sb-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:40}
+#sb-backdrop.show{display:block}
+
+/* ══ MAIN ══════════════════════════════════════════════════ */
+#main{margin-left:260px;flex:1;padding:2.5rem 3rem 4rem;min-height:100vh;transition:margin-left .25s}
+#main.full{margin-left:0}
+.page{display:none}
+.page.active{display:block}
+.page-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;color:var(--gray-900);letter-spacing:-.03em;margin-bottom:1.75rem}
+.page-subtitle{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--violet);margin-bottom:1rem}
+
+/* ══ HOME — Matérias ══════════════════════════════════════ */
+.materia-card{background:var(--card);border:1.5px solid var(--violet-200);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.materia-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;cursor:pointer;transition:background .15s}
+.materia-head:hover{background:var(--violet-100)}
+.materia-head-left{display:flex;align-items:center;gap:8px}
+.materia-chevron{font-size:13px;color:var(--violet);transition:transform .2s}
+.materia-chevron.open{transform:rotate(90deg)}
+.materia-name{font-size:15px;font-weight:700;color:var(--violet);font-family:'Plus Jakarta Sans',sans-serif}
+.materia-body{background:var(--violet-100);padding:.75rem}
+.assunto-card{background:var(--card);border-radius:.75rem;padding:.75rem 1rem;margin-bottom:6px}
+.assunto-head{display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.assunto-chevron{font-size:12px;color:var(--violet);transition:transform .2s}
+.assunto-chevron.open{transform:rotate(90deg)}
+.assunto-name{font-size:14px;font-weight:600;color:var(--gray-800)}
+.assunto-count{font-size:12px;color:var(--violet);text-decoration:underline;cursor:pointer;font-weight:500}
+.capitulo-list{margin-top:.5rem;padding-left:.5rem}
+.capitulo-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+.capitulo-name{font-size:13px;color:var(--gray-600)}
+.capitulo-count{font-size:12px;color:var(--violet);text-decoration:underline;cursor:pointer;font-weight:500}
+.add-assunto-btn{display:block;font-size:12.5px;color:var(--violet);opacity:.7;cursor:pointer;margin-top:.4rem;padding:.25rem .5rem;transition:opacity .15s}
+.add-assunto-btn:hover{opacity:1}
+.add-materia-card{background:transparent;border:1.5px dashed var(--violet-300);border-radius:var(--radius);padding:1rem 1.25rem;text-align:center;cursor:pointer;font-size:13.5px;color:var(--violet);font-weight:600;transition:all .15s;margin-bottom:10px}
+.add-materia-card:hover{background:var(--violet-100)}
+
+/* Import section */
+.import-section{margin-top:2rem}
+.import-card{background:var(--card);border:1.5px solid var(--violet-200);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow-sm)}
+.import-field{margin-bottom:.9rem}
+.import-label{font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:.35rem;display:block}
+.import-input{width:100%;padding:8px 12px;border:1.5px solid var(--violet-200);border-radius:.75rem;font-family:'Inter',sans-serif;font-size:13px;color:var(--gray-700);outline:none;transition:border-color .15s;background:#fff}
+.import-input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.btn-primary{padding:9px 22px;background:var(--violet);border:none;border-radius:.75rem;color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.btn-primary:hover{background:var(--violet-dark);transform:translateY(-1px);box-shadow:0 4px 14px rgba(124,58,237,.4)}
+
+/* ══ QUESTÕES — one by one ══════════════════════════════════ */
+.q-breadcrumb{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:1.25rem}
+.q-card{background:var(--card);border:1.5px solid var(--violet-200);border-radius:var(--radius);padding:1.75rem 2rem;box-shadow:var(--shadow-sm);max-width:700px;margin-bottom:1rem;transition:box-shadow .2s}
+.q-card:hover{box-shadow:var(--shadow)}
+@keyframes qSlideIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+@keyframes qSlideOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(-18px)}}
+.q-card.entering{animation:qSlideIn .22s cubic-bezier(.23,1,.32,1)}
+.q-meta{display:flex;align-items:center;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+.q-tag{font-size:11px;color:var(--gray-400);font-weight:500}
+.q-tag-sep{color:var(--violet-300);font-size:11px}
+.q-actions-right{margin-left:auto;display:flex;gap:6px}
+.q-icon-btn{background:transparent;border:none;cursor:pointer;font-size:18px;padding:2px 4px;transition:transform .15s;line-height:1}
+.q-icon-btn:hover{transform:scale(1.2)}
+.q-statement{font-size:16px;line-height:1.88;color:var(--gray-900);margin-bottom:1.75rem;text-align:justify;letter-spacing:.01em}
+.q-options{display:flex;gap:12px;margin-bottom:1.25rem}
+.q-opt{flex:1;padding:11px 10px;border:1.5px solid var(--violet-200);border-radius:.875rem;background:transparent;color:var(--gray-400);font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.08em;transition:all .18s;text-align:center}
+.q-opt:hover:not(:disabled){background:var(--violet-100);border-color:var(--violet-300);color:var(--violet)}
+.q-opt.q-opt-selected{background:var(--violet-100);border-color:var(--violet-300);color:var(--violet);font-weight:700}
+.q-opt.selected-c{background:var(--green-100);border-color:var(--green-400);color:var(--green-600)}
+.q-opt.selected-w{background:var(--red-100);border-color:var(--red-400);color:var(--red-600)}
+.q-opt.reveal-c{background:var(--green-100);border-color:var(--green-400);color:var(--green-600)}
+.q-opt.reveal-w{background:var(--red-100);border-color:var(--red-400);color:var(--red-600)}
+.q-opt:disabled{cursor:default}
+.q-responder{display:flex;justify-content:center;margin-bottom:1rem}
+.btn-responder{padding:9px 28px;border:1.5px solid var(--violet-200);border-radius:.875rem;background:var(--violet-100);color:var(--violet);font-size:13px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:.06em;transition:all .15s}
+.btn-responder:hover{background:var(--violet-200)}
+.btn-responder:disabled{opacity:.4;cursor:not-allowed}
+
+/* Fundamentação panel */
+.q-explanation{margin-top:.75rem;border-radius:.875rem;overflow:hidden;border:1.5px solid var(--violet-200)}
+.q-exp-header{display:flex;align-items:center;gap:8px;padding:.6rem 1rem}
+.q-exp-header.correct{background:var(--green-100)}
+.q-exp-header.wrong{background:var(--red-100)}
+.q-exp-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.q-exp-label.correct{color:var(--green-600)}
+.q-exp-label.wrong{color:var(--red-600)}
+.q-exp-hint{font-size:11px;color:var(--gray-400)}
+.q-exp-body{padding:1.1rem 1.25rem 1.25rem}
+.q-exp-text{font-size:14px;color:var(--gray-700);line-height:1.8;margin-bottom:1rem}
+.q-exp-text strong{color:var(--violet-dark);font-weight:700}
+.trap-box{display:flex;gap:9px;padding:9px 12px;background:var(--amber-50);border:1.5px solid var(--amber-200);border-radius:.75rem;margin-bottom:.75rem}
+.trap-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--amber-600);display:block;margin-bottom:2px}
+.trap-text{font-size:12.5px;color:#92400E;line-height:1.6}
+.q-note-area{background:var(--gray-100);border-radius:.75rem;padding:.75rem 1rem;margin-top:.5rem}
+.q-note-label{font-size:11px;color:var(--gray-400);font-style:italic;margin-bottom:.4rem;display:block}
+.q-note-content{font-size:13px;color:var(--gray-700);font-style:italic}
+.q-note-textarea{width:100%;background:transparent;border:none;font-family:'Inter',sans-serif;font-size:13px;color:var(--gray-700);resize:none;outline:none;min-height:60px;font-style:italic}
+
+/* Navigation prev/next */
+.q-nav{display:flex;align-items:center;gap:10px;margin-top:1.25rem;max-width:680px}
+.btn-prev{padding:9px 20px;border:1.5px solid var(--violet-200);border-radius:.875rem;background:transparent;color:var(--gray-500);font-size:12.5px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s}
+.btn-prev:hover{background:var(--violet-100);color:var(--violet);border-color:var(--violet-300)}
+.btn-next{padding:9px 22px;border:none;border-radius:.875rem;background:var(--violet);color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;box-shadow:0 2px 8px rgba(124,58,237,.25)}
+.btn-next:hover{background:var(--violet-dark)}
+.q-counter{margin-left:auto;font-size:12px;color:var(--gray-400);font-weight:500}
+.q-progress-bar{height:6px;background:var(--violet-100);border-radius:6px;margin-bottom:1.5rem;max-width:700px;overflow:hidden;display:flex}
+.q-prog-correct{height:100%;background:#4ADE80;transition:width .4s cubic-bezier(.23,1,.32,1)}
+.q-prog-wrong{height:100%;background:#F87171;transition:width .4s cubic-bezier(.23,1,.32,1)}
+.q-prog-rest{height:100%;background:var(--violet);transition:width .4s cubic-bezier(.23,1,.32,1);opacity:.35}
+.q-prog-stats{display:flex;gap:14px;margin-bottom:.75rem;max-width:700px}
+.q-prog-stat{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gray-500);font-weight:500}
+.q-prog-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* Filter bar for questoes */
+.q-filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.25rem;max-width:680px}
+.q-filter-btn{padding:5px 14px;border-radius:20px;border:1.5px solid var(--violet-200);background:transparent;color:var(--gray-500);font-size:12px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;transition:all .15s}
+.q-filter-btn:hover{background:var(--violet-100);color:var(--violet)}
+.q-filter-btn.active{background:var(--violet);border-color:var(--violet);color:#fff;font-weight:600}
+.q-search{position:relative;max-width:280px;margin-bottom:1.25rem}
+.q-search input{width:100%;padding:8px 12px 8px 34px;border:1.5px solid var(--violet-200);border-radius:20px;font-size:13px;font-family:'Inter',sans-serif;color:var(--gray-700);outline:none;background:#fff;transition:border-color .15s}
+.q-search input:focus{border-color:var(--violet)}
+.q-search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--gray-300);font-size:14px}
+
+/* ══ QUESTÕES FAVORITAS ══════════════════════════════════════ */
+.fav-materia-card{background:var(--card);border:1.5px solid var(--violet-200);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.fav-materia-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;cursor:pointer;transition:background .15s}
+.fav-materia-head:hover{background:var(--violet-100)}
+.fav-materia-name{font-size:15px;font-weight:700;color:var(--violet);font-family:'Plus Jakarta Sans',sans-serif}
+.fav-count{font-size:13px;color:var(--gray-400);font-weight:500}
+.fav-body{background:var(--violet-100);padding:.75rem}
+.fav-q-card{background:var(--card);border-radius:.875rem;padding:.9rem 1rem;margin-bottom:6px;border:1.5px solid var(--violet-200)}
+.fav-q-meta{display:flex;align-items:center;gap:8px;margin-bottom:.5rem;flex-wrap:wrap}
+.fav-q-cap{font-size:11px;color:var(--violet);font-weight:600}
+.fav-q-text{font-size:13px;color:var(--gray-700);line-height:1.65}
+.fav-q-actions{display:flex;gap:6px;margin-top:.5rem}
+.fav-icon-btn{background:transparent;border:none;cursor:pointer;font-size:16px;padding:2px;transition:transform .15s}
+.fav-icon-btn:hover{transform:scale(1.2)}
+.fav-empty{text-align:center;padding:3rem;color:var(--gray-400);font-size:14px}
+.fav-empty-icon{font-size:40px;margin-bottom:.75rem}
+
+/* ══ ANÁLISE INDIVIDUALIZADA ══════════════════════════════ */
+.analise-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:2rem}
+.analise-stat-card{background:var(--card);border:1.5px solid var(--violet-200);border-radius:var(--radius);padding:1.25rem;box-shadow:var(--shadow-sm)}
+.analise-stat-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400);margin-bottom:.4rem}
+.analise-stat-val{font-size:28px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;line-height:1}
+.analise-stat-sub{font-size:12px;color:var(--gray-400);margin-top:.25rem}
+.analise-section-title{font-size:15px;font-weight:700;color:var(--gray-800);margin-bottom:.9rem;font-family:'Plus Jakarta Sans',sans-serif}
+.analise-bar-card{background:var(--card);border:1.5px solid var(--violet-200);border-radius:var(--radius);padding:1.25rem;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+.analise-bar-row{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.analise-bar-label{font-size:13px;color:var(--gray-600);font-weight:500;min-width:120px}
+.analise-bar-track{flex:1;height:8px;background:var(--violet-100);border-radius:6px;overflow:hidden}
+.analise-bar-fill{height:100%;border-radius:6px;transition:width .6s cubic-bezier(.23,1,.32,1)}
+.analise-bar-pct{font-size:12px;font-weight:700;min-width:36px;text-align:right}
+.analise-empty{text-align:center;padding:3rem;color:var(--gray-400);font-size:14px}
+.analise-empty-icon{font-size:40px;margin-bottom:.75rem}
+
+/* ══ ANOTAÇÕES ══════════════════════════════════════════════ */
+.nota-card{background:var(--card);border:1.5px solid var(--violet-200);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:10px;box-shadow:var(--shadow-sm);cursor:pointer;transition:all .15s}
+.nota-card:hover{border-color:var(--violet-300);box-shadow:var(--shadow)}
+.nota-meta{display:flex;align-items:center;gap:8px;margin-bottom:.4rem}
+.nota-cap{font-size:11px;color:var(--violet);font-weight:600}
+.nota-sep{color:var(--violet-300);font-size:11px}
+.nota-norma{font-size:11px;color:var(--gray-400)}
+.nota-text{font-size:13px;color:var(--gray-700);line-height:1.6;font-style:italic}
+.nota-stmt{font-size:12px;color:var(--gray-500);line-height:1.5;margin-bottom:.4rem;border-left:2px solid var(--violet-200);padding-left:.6rem}
+.notas-empty{text-align:center;padding:3rem;color:var(--gray-400);font-size:14px}
+.notas-empty-icon{font-size:40px;margin-bottom:.75rem}
+
+/* ══ ARTIGO POR ARTIGO ══════════════════════════════════════ */
+.artigo-intro{background:var(--card);border:1.5px solid var(--violet-200);border-radius:var(--radius);padding:1.25rem;margin-bottom:1.5rem;box-shadow:var(--shadow-sm)}
+.artigo-intro p{font-size:13.5px;color:var(--gray-600);line-height:1.7}
+.artigo-select-wrap{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:1.5rem;align-items:flex-end}
+.artigo-select-group{display:flex;flex-direction:column;gap:.35rem}
+.artigo-select-label{font-size:11px;font-weight:600;color:var(--gray-500);letter-spacing:.08em;text-transform:uppercase}
+.artigo-select{padding:8px 14px;border:1.5px solid var(--violet-200);border-radius:.75rem;font-family:'Inter',sans-serif;font-size:13px;color:var(--gray-700);outline:none;background:#fff;cursor:pointer;transition:border-color .15s;min-width:160px}
+.artigo-select:focus{border-color:var(--violet)}
+.artigo-ref-card{background:var(--card);border:1.5px solid var(--violet-200);border-radius:var(--radius);padding:1.25rem;margin-bottom:.75rem;box-shadow:var(--shadow-sm)}
+.artigo-ref-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--violet);margin-bottom:.4rem}
+.artigo-ref-text{font-size:13.5px;color:var(--gray-700);line-height:1.75}
+.artigo-q-list{margin-top:1.25rem}
+.artigo-q-card{background:var(--card);border:1.5px solid var(--violet-200);border-radius:var(--radius);padding:1.1rem 1.25rem;margin-bottom:8px;cursor:pointer;transition:all .15s;box-shadow:var(--shadow-sm)}
+.artigo-q-card:hover{border-color:var(--violet-300);box-shadow:var(--shadow)}
+.artigo-q-meta{font-size:11px;color:var(--gray-400);margin-bottom:.4rem}
+.artigo-q-text{font-size:13.5px;color:var(--gray-800);line-height:1.65}
+
+
+/* ══ QUESTOES NEW LAYOUT ════════════════════════════════════ */
+.q-result-banner{display:flex;align-items:center;gap:10px;padding:10px 16px;border-radius:10px;font-size:15px;font-weight:700;margin-bottom:1rem;font-family:'Plus Jakarta Sans',sans-serif}
+.q-result-banner.correct{background:var(--green-100);color:var(--green-600);border:1.5px solid var(--green-400)}
+.q-result-banner.wrong{background:var(--red-100);color:var(--red-600);border:1.5px solid var(--red-400)}
+.q-result-icon{font-size:20px}
+.q-exp-box{border-radius:10px;overflow:hidden;margin-bottom:.75rem;border:1.5px solid var(--violet-200)}
+.q-exp-box-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400);padding:8px 14px 4px;background:var(--violet-50)}
+.q-exp-box-body{padding:10px 14px 14px;background:var(--violet-50);font-size:13.5px;color:var(--gray-700);line-height:1.75}
+.q-exp-box-body strong{color:var(--violet-dark);font-weight:700}
+.q-exp-box-body.empty{color:var(--gray-300);font-style:italic}
+.q-exp-box.note-box .q-exp-box-label{color:var(--amber-600)}
+.q-exp-box.note-box{border-color:var(--amber-200)}
+.q-exp-box.note-box .q-exp-box-body{background:var(--amber-50)}
+
+/* ══ ARTIGO POR ARTIGO NEW ═══════════════════════════════════ */
+.artigo-topico-card{background:var(--card);border:1.5px solid var(--violet-200);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.artigo-para-card{background:var(--card);border:1.5px solid var(--violet-100);border-radius:.875rem;margin-bottom:8px;overflow:hidden}
+.artigo-para-head{display:flex;align-items:flex-start;justify-content:space-between;padding:1rem 1.1rem .75rem}
+.artigo-para-num{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:34px;background:var(--violet-100);color:var(--violet);font-size:14px;font-weight:700;border-radius:10px;margin-right:10px;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.artigo-para-ref{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--violet);margin-bottom:4px}
+.artigo-para-text{font-size:13.5px;color:var(--gray-700);line-height:1.75}
+.artigo-para-actions{display:flex;gap:5px;flex-shrink:0;margin-left:10px;align-items:flex-start}
+.artigo-icon-btn{display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:4px 10px;border-radius:20px;border:1.5px solid var(--violet-200);background:var(--violet-50);cursor:pointer;font-size:12px;color:var(--violet);transition:all .15s;white-space:nowrap;font-family:'Inter',sans-serif;line-height:1}
+.artigo-icon-btn:hover{background:var(--violet-100);border-color:var(--violet);transform:none}
+.artigo-icon-btn.fav-active{background:var(--amber-50);border-color:var(--amber-200);color:var(--amber-600)}
+.artigo-icon-btn.del-btn{border-color:var(--red-200);color:var(--red-400);background:var(--red-50)}
+.artigo-icon-btn.del-btn:hover{background:var(--red-100);border-color:var(--red-400)}
+.artigo-highlight-wrap{position:relative}
+.artigo-highlight-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;border:1.5px solid var(--violet-200);background:var(--violet-50);cursor:pointer;font-size:12px;color:var(--violet);transition:all .15s;font-family:'Inter',sans-serif}
+.artigo-highlight-btn:hover{background:var(--violet-100);border-color:var(--violet)}
+.artigo-color-picker{position:absolute;top:110%;right:0;background:#fff;border:1.5px solid var(--violet-200);border-radius:12px;padding:10px;box-shadow:0 8px 24px rgba(124,58,237,.15);z-index:50;display:none;min-width:180px}
+.artigo-color-picker.open{display:block}
+.artigo-color-picker-title{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gray-400);margin-bottom:8px}
+.artigo-color-swatches{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.artigo-color-swatch{width:22px;height:22px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:all .15s}
+.artigo-color-swatch:hover{transform:scale(1.2);border-color:var(--gray-400)}
+.artigo-color-swatch.selected{border-color:var(--gray-700);transform:scale(1.15)}
+.artigo-color-hex{display:flex;gap:6px;align-items:center}
+.artigo-color-hex input{flex:1;padding:5px 8px;border:1.5px solid var(--violet-200);border-radius:8px;font-size:12px;font-family:monospace;color:var(--gray-700);outline:none}
+.artigo-color-hex input:focus{border-color:var(--violet)}
+.artigo-color-hex button{padding:5px 10px;border-radius:8px;border:none;background:var(--violet);color:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+.artigo-para-text .highlight{border-radius:3px;padding:0 2px}
+.artigo-note-inline{margin:4px 14px 10px;padding:8px 12px;background:var(--amber-50);border:1.5px solid var(--amber-200);border-radius:10px;font-size:13px;color:#7a5800;line-height:1.6}
+.artigo-note-input{width:100%;border:1.5px solid var(--amber-200);border-radius:8px;padding:6px 10px;font-size:13px;font-family:'Inter',sans-serif;color:var(--gray-700);background:#fff;outline:none;resize:none;margin-top:4px}
+.artigo-note-input:focus{border-color:var(--amber-600)}
+.artigo-empty{text-align:center;padding:2.5rem 1rem;color:var(--gray-400);font-size:13.5px}
+.btn-artigo-action{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:20px;border:1.5px solid var(--violet-200);background:#fff;color:var(--violet);font-size:13px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .18s;box-shadow:0 1px 4px rgba(124,58,237,.08);letter-spacing:.01em}
+.btn-artigo-action:hover{background:var(--violet-50);border-color:var(--violet-300);box-shadow:0 3px 10px rgba(124,58,237,.15);transform:translateY(-1px)}
+.btn-artigo-action.primary{background:var(--violet);border-color:var(--violet);color:#fff;box-shadow:0 2px 8px rgba(124,58,237,.3)}
+.btn-artigo-action.primary:hover{background:var(--violet-dark);box-shadow:0 4px 14px rgba(124,58,237,.4);transform:translateY(-1px)}
+.artigo-add-topico{background:transparent;border:1.5px dashed var(--violet-300);border-radius:var(--radius);padding:.9rem 1.25rem;text-align:center;cursor:pointer;font-size:13.5px;color:var(--violet);font-weight:600;transition:all .15s;margin-bottom:10px;display:block;width:100%}
+.artigo-add-topico:hover{background:var(--violet-100)}
+.artigo-topico-name{font-size:15px;font-weight:700;color:var(--violet);font-family:'Plus Jakarta Sans',sans-serif;padding:.9rem 1.1rem .5rem}
+
+/* Import artigo modal */
+.artigo-modal-schema{background:var(--bg);border:1px solid var(--violet-200);border-radius:.75rem;padding:.75rem 1rem;font-size:11px;color:var(--gray-600);font-family:monospace;line-height:1.65;margin-bottom:1rem;overflow-x:auto;white-space:pre}
+
+/* ══ MODALS ══════════════════════════════════════════════════ */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(3px)}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:1.25rem;padding:1.75rem;max-width:520px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(124,58,237,.2)}
+.modal-title{font-size:16px;font-weight:700;color:var(--gray-900);margin-bottom:.3rem;font-family:'Plus Jakarta Sans',sans-serif}
+.modal-sub{font-size:13px;color:var(--gray-400);margin-bottom:1.1rem;line-height:1.5}
+.modal-schema{background:var(--bg);border:1px solid var(--violet-200);border-radius:.75rem;padding:.85rem 1rem;font-size:11.5px;color:var(--gray-600);font-family:monospace;line-height:1.7;margin-bottom:1.1rem;overflow-x:auto;white-space:pre}
+.modal-textarea{width:100%;height:120px;border:1.5px solid var(--violet-200);border-radius:.75rem;padding:.65rem .85rem;font-family:monospace;font-size:12px;color:var(--gray-700);resize:vertical;background:#fff;outline:none;transition:border-color .15s}
+.modal-textarea:focus{border-color:var(--violet)}
+.modal-error{font-size:12px;color:var(--red-600);margin-top:.4rem;display:none}
+.modal-actions{display:flex;gap:8px;margin-top:.85rem;flex-wrap:wrap}
+.btn-modal-primary{padding:8px 20px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;background:var(--violet);border:none;color:#fff;transition:all .15s}
+.btn-modal-primary:hover{background:var(--violet-dark)}
+.btn-modal-ghost{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;border:1.5px solid var(--violet-200);background:transparent;color:var(--gray-600);transition:all .15s}
+.btn-modal-ghost:hover{background:var(--violet-100);color:var(--violet)}
+.btn-modal-danger{padding:8px 16px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;font-family:'Inter',sans-serif;border:1.5px solid var(--red-400);background:transparent;color:var(--red-600);transition:all .15s;margin-left:auto}
+.btn-modal-danger:hover{background:var(--red-50)}
+.add-modal-field{margin-bottom:.85rem}
+.add-modal-label{font-size:12px;font-weight:600;color:var(--gray-600);margin-bottom:.3rem;display:block}
+.add-modal-input{width:100%;padding:9px 12px;border:1.5px solid var(--violet-200);border-radius:.75rem;font-family:'Inter',sans-serif;font-size:13.5px;color:var(--gray-700);outline:none;background:#fff;transition:border-color .15s}
+.add-modal-input:focus{border-color:var(--violet);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+
+/* Confirm delete inline */
+.confirm-del{display:inline-flex;gap:6px;align-items:center}
+.btn-confirm{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;background:var(--red-600);border:none;color:#fff}
+.btn-cancel-del{padding:3px 8px;border-radius:20px;font-size:11px;cursor:pointer;font-family:'Inter',sans-serif;border:1px solid var(--gray-300);background:transparent;color:var(--gray-500)}
+
+/* Note modal */
+.note-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(3px)}
+.note-modal-overlay.open{display:flex}
+.note-modal{background:#fff;border-radius:1.25rem;padding:1.5rem;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(124,58,237,.2)}
+.note-modal-title{font-size:15px;font-weight:700;color:var(--gray-900);margin-bottom:1rem;font-family:'Plus Jakarta Sans',sans-serif}
+.note-toolbar{display:flex;flex-wrap:wrap;gap:4px;padding:.5rem;background:var(--bg);border:1px solid var(--violet-200);border-radius:.75rem .75rem 0 0;border-bottom:none}
+.note-tb-btn{padding:4px 8px;border:none;background:transparent;border-radius:.4rem;font-size:13px;cursor:pointer;color:var(--gray-600);font-family:'Inter',sans-serif;line-height:1.4;min-width:28px;text-align:center;transition:all .12s}
+.note-tb-btn:hover{background:var(--violet-100);color:var(--violet)}
+.note-tb-btn.active{background:var(--violet);color:#fff}
+.note-tb-sep{width:1px;height:22px;background:var(--violet-200);margin:0 2px;align-self:center}
+.note-special-btns{display:flex;gap:6px;padding:.5rem;background:var(--bg);border:1px solid var(--violet-200);border-top:1px dashed var(--violet-100);border-radius:0}
+.note-special-btn{padding:5px 10px;border-radius:.5rem;border:none;cursor:pointer;font-size:13px;font-weight:600;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:5px;transition:all .15s}
+.note-special-btn.doubt{background:#EDE9FE;color:#7C3AED}
+.note-special-btn.important{background:#FEE2E2;color:#DC2626}
+.note-special-btn.tip{background:#FEF9C3;color:#854D0E}
+.note-special-btn.law{background:#DCFCE7;color:#166534}
+.note-editor-area{min-height:140px;padding:.75rem 1rem;border:1.5px solid var(--violet-200);border-radius:0 0 .75rem .75rem;font-family:'Inter',sans-serif;font-size:13.5px;color:var(--gray-700);outline:none;line-height:1.7;background:#fff}
+.note-editor-area:focus{border-color:var(--violet)}
+.note-editor-area[placeholder]:empty:before{content:attr(placeholder);color:var(--gray-300);pointer-events:none}
+.note-editor-area h1{font-size:20px;font-weight:700;margin:.4rem 0}
+.note-editor-area h2{font-size:17px;font-weight:700;margin:.3rem 0}
+.note-editor-area h3{font-size:14px;font-weight:700;margin:.25rem 0}
+.note-editor-area strong,.note-editor-area b{font-weight:700;color:var(--violet-dark)}
+.note-editor-area em,.note-editor-area i{font-style:italic}
+.note-editor-area u{text-decoration:underline}
+.note-editor-area s{text-decoration:line-through}
+.note-editor-area ul{list-style:disc;padding-left:1.2rem}
+.note-editor-area ol{list-style:decimal;padding-left:1.2rem}
+.note-editor-area .tag-doubt{background:#EDE9FE;color:#7C3AED;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
+.note-editor-area .tag-important{background:#FEE2E2;color:#DC2626;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
+.note-editor-area .tag-tip{background:#FEF9C3;color:#854D0E;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
+.note-editor-area .tag-law{background:#DCFCE7;color:#166534;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700}
+.note-modal-actions{display:flex;gap:8px;margin-top:1rem}
+.note-display-rich{margin-top:.75rem;padding:.75rem 1rem;background:var(--violet-100);border-radius:.75rem;font-size:13px;color:var(--gray-700);line-height:1.7;border:1px solid var(--violet-200)}
+.note-display-rich .tag-doubt{background:#EDE9FE;color:#7C3AED;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700;margin-right:4px}
+.note-display-rich .tag-important{background:#FEE2E2;color:#DC2626;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700;margin-right:4px}
+.note-display-rich .tag-tip{background:#FEF9C3;color:#854D0E;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700;margin-right:4px}
+.note-display-rich .tag-law{background:#DCFCE7;color:#166534;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700;margin-right:4px}
+
+
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0)}
+  #sb-toggle{display:flex}
+  #sb-backdrop.show{display:block}
+  #main{margin-left:0;padding:1.25rem 1rem 4rem}
+  .analise-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- Sidebar toggle (mobile) -->
+<button id="sb-toggle" onclick="toggleSidebar()">☰</button>
+<div id="sb-backdrop" onclick="toggleSidebar(false)"></div>
+
+<!-- ══ SIDEBAR ══════════════════════════════════════════════ -->
+<aside id="sidebar">
+  <div style="position:absolute;bottom:1rem;left:0;right:0;padding:0 1rem">
+    <button onclick="syncPull().then(()=>location.reload())" style="width:100%;padding:8px;border-radius:20px;border:1.5px solid var(--violet-200);background:var(--violet-50);color:var(--violet);font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">⟳ Sincronizar agora</button>
+  </div>
+  <div class="sb-brand">
+    <div class="sb-brand-mark"></div>
+    <div>
+      <div class="sb-brand-name">Malu</div>
+      <div class="sb-brand-sub">Simulador de Questões</div>
+    </div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-label">Navegação</div>
+    <div class="sb-link active" id="nav-inicio" onclick="navTo('inicio')">
+      <span class="sb-link-icon">🏠</span> Início
+    </div>
+    <div class="sb-link" id="nav-analise" onclick="navTo('analise')">
+      <span class="sb-link-icon">🔍</span> Análise Individualizada
+    </div>
+    <div class="sb-link" id="nav-favoritas" onclick="navTo('favoritas')">
+      <span class="sb-link-icon">⭐</span> Questões Favoritas
+    </div>
+    <div class="sb-link" id="nav-anotacoes" onclick="navTo('anotacoes')">
+      <span class="sb-link-icon">✏️</span> Anotações
+    </div>
+    <div class="sb-link" id="nav-artigo" onclick="navTo('artigo')">
+      <span class="sb-link-icon">📖</span> Artigo por Artigo
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+  <div class="sb-materias-label">Matérias</div>
+  <div id="sb-materias"></div>
+</aside>
+
+<!-- ══ MAIN ══════════════════════════════════════════════════ -->
+<div id="main">
+
+  <!-- INÍCIO -->
+  <div class="page active" id="page-inicio">
+    <h1 class="page-title">Início</h1>
+    <div class="page-subtitle">Matérias</div>
+    <div id="home-materias"></div>
+    <div class="import-section">
+      <div class="page-subtitle">Importar Questões</div>
+      <div class="import-card">
+        <div class="import-field">
+          <label class="import-label">Matéria:</label>
+          <input class="import-input" id="imp-materia" type="text" placeholder="ex: Auditoria e NBCs">
+        </div>
+        <div class="import-field">
+          <label class="import-label">Assunto (norma):</label>
+          <input class="import-input" id="imp-assunto" type="text" placeholder="ex: NAT/TCU">
+        </div>
+        <div class="import-field">
+          <label class="import-label">Subassunto (capítulo):</label>
+          <input class="import-input" id="imp-subassunto" type="text" placeholder="ex: Capítulo 3">
+        </div>
+        <button class="btn-primary" onclick="openImportModal()">Adicionar questões via JSON</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUESTÕES -->
+  <div class="page" id="page-questoes">
+    <h1 class="page-title" id="q-page-title">Questões</h1>
+    <div class="q-breadcrumb" id="q-breadcrumb"></div>
+    <div class="q-filter-bar" id="q-filter-bar"></div>
+    <div class="q-prog-stats" id="q-prog-stats"></div>
+    <div class="q-progress-bar" id="q-prog-bar">
+      <div class="q-prog-correct" id="q-prog-correct" style="width:0%"></div>
+      <div class="q-prog-wrong" id="q-prog-wrong" style="width:0%"></div>
+      <div class="q-prog-rest" id="q-prog-rest" style="width:0%"></div>
+    </div>
+    <div id="q-card-wrap"></div>
+    <div class="q-nav" id="q-nav"></div>
+  </div>
+
+  <!-- FAVORITAS -->
+  <div class="page" id="page-favoritas">
+    <h1 class="page-title">Questões Favoritas</h1>
+    <div class="page-subtitle">Matérias</div>
+    <div id="fav-materias"></div>
+  </div>
+
+  <!-- ANÁLISE -->
+  <div class="page" id="page-analise">
+    <h1 class="page-title">Análise Individualizada</h1>
+    <div id="analise-content"></div>
+  </div>
+
+  <!-- ANOTAÇÕES -->
+  <div class="page" id="page-anotacoes">
+    <h1 class="page-title">Anotações</h1>
+    <div id="notas-content"></div>
+  </div>
+
+  <!-- ARTIGO POR ARTIGO -->
+  <div class="page" id="page-artigo">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px">
+      <h1 class="page-title" style="margin-bottom:0">Artigo por Artigo</h1>
+      <div style="display:flex;gap:8px">
+        <button class="btn-artigo-action" onclick="openArtigoImport()">
+          <span style="font-size:14px;font-weight:300">＋</span> Importar tópicos (JSON)
+        </button>
+        <button class="btn-artigo-action primary" onclick="openArtigoAddManual()">
+          <span style="font-size:14px;font-weight:300">＋</span> Adicionar tópico
+        </button>
+      </div>
+    </div>
+    <div class="artigo-select-wrap" id="artigo-filters" style="margin-bottom:1.5rem">
+      <div class="artigo-select-group">
+        <span class="artigo-select-label">Matéria</span>
+        <select class="artigo-select" id="artigo-mat-sel" onchange="renderArtigoAssuntos()"></select>
+      </div>
+      <div class="artigo-select-group" id="artigo-assunto-wrap" style="display:none">
+        <span class="artigo-select-label">Assunto</span>
+        <select class="artigo-select" id="artigo-norma-sel" onchange="renderArtigoCapitulosFilter()"></select>
+      </div>
+      <div class="artigo-select-group" id="artigo-cap-wrap" style="display:none">
+        <span class="artigo-select-label">Subassunto</span>
+        <select class="artigo-select" id="artigo-cap-sel" onchange="renderArtigoTopicosFilter()"></select>
+      </div>
+      <div class="artigo-select-group" id="artigo-topico-wrap" style="display:none">
+        <span class="artigo-select-label">Tópico</span>
+        <select class="artigo-select" id="artigo-topico-sel" onchange="renderArtigoContent()"></select>
+      </div>
+    </div>
+    <div id="artigo-content"></div>
+  </div>
+
+</div><!-- #main -->
+
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="modal-import" onclick="closeModalOutside(event,'modal-import')">
+  <div class="modal">
+    <div class="modal-title">Importar questões via JSON</div>
+    <div class="modal-sub">Cole um array JSON com as questões. Elas serão agrupadas pela norma automaticamente.</div>
+    <div class="modal-schema">[
+  {
+    "id": "unico_por_questao",
+    "norma": "NAT/TCU",
+    "capitulo": "Capítulo 3 — §§73-77: ...",
+    "ref": "NAT, §73",
+    "answer": "CERTO",
+    "statement": "Texto...",
+    "explanation": "Fundamentação...",
+    "trap": "Pegadinha..."
+  }
+]</div>
+    <textarea class="modal-textarea" id="imp-json" placeholder="Cole o JSON aqui..."></textarea>
+    <div class="modal-error" id="imp-error"></div>
+    <div class="modal-actions">
+      <button class="btn-modal-primary" onclick="doImport()">Importar</button>
+      <button class="btn-modal-ghost" onclick="closeModal('modal-import')">Cancelar</button>
+      <button class="btn-modal-danger" onclick="clearImported()">Remover importadas</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const Q = [
+  // ── CAP 1 ──────────────────────────────────────────────────────────────────
+  {id:"c1_01",norma:"NAT/TCU",capitulo:"Capítulo 1 — Preceitos Básicos",ref:"NAT, §15",answer:"ERRADO",
+   statement:'O termo "auxílio" constante do caput do art. 71 da CF implica subordinação hierárquica do TCU ao Congresso Nacional, de modo que das decisões do Tribunal cabem recursos ao Poder Legislativo quando exorbitarem o âmbito de suas competências constitucionais.',
+   explanation:'A NAT (§15) é expressa: o termo "auxílio" *não representa subordinação hierárquica*. O TCU exerce *competências próprias e independentes*, e de suas decisões *não cabem recursos ao Congresso Nacional ou a outros Poderes*, senão no seu próprio âmbito.',
+   trap:'Associar "auxílio" a "subordinação" é a armadilha clássica sobre a natureza jurídica da relação TCU-Congresso.'},
+  {id:"c1_02",norma:"NAT/TCU",capitulo:"Capítulo 1 — Preceitos Básicos",ref:"NAT, §19",answer:"CERTO",
+   statement:"A autonomia financeira do TCU caracteriza-se, entre outros aspectos, pela não sujeição a limitações de empenho por outro órgão ou Poder, pela elaboração de seu próprio orçamento sem interferência de terceiros e pelo recebimento de recursos do tesouro segundo parâmetros não discricionários.",
+   explanation:"A NAT (§19) lista exatamente esses componentes da autonomia financeira do TCU, sem ressalvas.",
+   trap:"Item correto que parece excessivo. A norma não cria exceções nesse ponto."},
+  {id:"c1_03",norma:"NAT/TCU",capitulo:"Capítulo 1 — Preceitos Básicos",ref:"NAT, §§4 e 6",answer:"ERRADO",
+   statement:"As NAT têm natureza jurídica e específica, sendo aplicáveis apenas aos tipos de trabalho de auditoria expressamente nelas mencionados; para modalidades não previstas aplica-se diretamente a CF, sem possibilidade de aplicação subsidiária das NAT.",
+   explanation:"As NAT têm natureza *técnica* (não jurídica) e *geral* (não específica). Em relação às demais ações de controle não cobertas pelas NAT, estas têm *aplicação subsidiária*.",
+   trap:"Dupla inversão: troca 'técnica' por 'jurídica' e 'geral' por 'específica', além de negar a aplicação subsidiária expressamente prevista."},
+  {id:"c1_04",norma:"NAT/TCU",capitulo:"Capítulo 1 — Preceitos Básicos",ref:"NAT, §7",answer:"CERTO",
+   statement:"As ISSAI da Intosai são aplicáveis em complemento às NAT especialmente nas situações em que o assunto não for explicitamente tratado nas NAT, desde que compatíveis com as atribuições constitucionais e legais do TCU, com o ordenamento jurídico pátrio e com as disposições e a lógica das próprias NAT.",
+   explanation:"A NAT (§7) prevê exatamente essa aplicação complementar e subsidiária das ISSAI, condicionada à compatibilidade com as atribuições do TCU, com o ordenamento jurídico e com a lógica das NAT.",
+   trap:"Item correto e literal. O risco é o candidato desconfiar da condição 'desde que compatíveis'."},
+  {id:"c1_05",norma:"NAT/TCU",capitulo:"Capítulo 1 — Preceitos Básicos",ref:"NAT, §9",answer:"ERRADO",
+   statement:"Outras normas profissionais, como as do IIA/Audibra, podem ser aplicadas conjuntamente com as NAT, prevalecendo, no entanto, as normas do IIA/Audibra quando houver incompatibilidade com as NAT.",
+   explanation:"A NAT (§9) prevê o contrário: *prevalecerão as NAT* quando houver algum grau de incompatibilidade.",
+   trap:"Inversão da hierarquia normativa: a questão atribui prevalência ao IIA/Audibra, quando a prevalência é das NAT."},
+  {id:"c1_06",norma:"NAT/TCU",capitulo:"Capítulo 1 — Preceitos Básicos",ref:"NAT, §27",answer:"CERTO",
+   statement:"O controle externo abrange qualquer pessoa física ou jurídica, pública ou privada, que utilize, arrecade, guarde, gerencie ou administre dinheiros, bens e valores públicos ou pelos quais a União responda, ou que, em nome desta, assuma obrigações de natureza pecuniária.",
+   explanation:"A NAT (§27) define o controle externo nesses exatos termos, sem restrição a pessoas jurídicas de direito público.",
+   trap:"Item correto. O candidato pode restringir mentalmente a abrangência apenas a entidades públicas."},
+  {id:"c1_07",norma:"NAT/TCU",capitulo:"Capítulo 1 — Preceitos Básicos",ref:"NAT, §21",answer:"CERTO",
+   statement:"Mesmo quando o TCU realiza fiscalizações para atender às solicitações do Congresso Nacional, atuando como agente do Parlamento, o Tribunal resguarda sua independência e autonomia, não havendo relação de subordinação ao Congresso.",
+   explanation:"A NAT (§21) é expressa: mesmo quando trabalha como agente do Parlamento, o Tribunal atua resguardando sua independência e autonomia.",
+   trap:"Item correto. A percepção intuitiva de que atender solicitação do Congresso implicaria subordinação é exatamente a armadilha."},
+  {id:"c1_08",norma:"NAT/TCU",capitulo:"Capítulo 1 — Preceitos Básicos",ref:"NAT, §23",answer:"ERRADO",
+   statement:"Embora o controle interno tenha o dever constitucional de apoiar o controle externo, há relação de hierarquia entre eles, cabendo ao TCU coordenar as atividades do controle interno.",
+   explanation:"A NAT (§23) é expressa: *não há relação de hierarquia* entre controle externo e controle interno — há *complementaridade*. As NAT *não atribuem ao TCU função de coordenação* do controle interno.",
+   trap:"Duplo erro: afirma hierarquia onde a norma prevê complementaridade, e atribui ao TCU competência de coordenação inexistente."},
+  {id:"c1_09",norma:"NAT/TCU",capitulo:"Capítulo 1 — Preceitos Básicos",ref:"NAT, §22",answer:"ERRADO",
+   statement:"A jurisdição do TCU sobre as pessoas sujeitas à sua competência implica que os administradores e responsáveis têm relação de subordinação ao Tribunal, podendo alegar absolvição com base em verificações técnicas realizadas pelo TCU.",
+   explanation:"A NAT (§22) é expressa: *jurisdição não significa subordinação*. Os responsáveis são plena e exclusivamente responsáveis e *não poderão alegar absolvição* com base em verificações do TCU ou opiniões de seu corpo técnico, a menos que sobre elas tenham sido emitidos julgamentos legalmente válidos.",
+   trap:"Confunde jurisdição com subordinação e inverte a regra sobre impossibilidade de alegar absolvição baseada em verificações técnicas."},
+  {id:"c1_10",norma:"NAT/TCU",capitulo:"Capítulo 1 — Preceitos Básicos",ref:"NAT, Bases Conceituais",answer:"CERTO",
+   statement:"A auditoria é definida nas NAT como o processo sistemático, documentado e independente de se avaliar objetivamente uma situação ou condição para determinar a extensão na qual critérios são atendidos, obter evidências quanto a esse atendimento e relatar os resultados dessa avaliação a um destinatário predeterminado.",
+   explanation:"Este é o conceito geral de auditoria sintetizado nas NAT, com todos os seus elementos essenciais.",
+   trap:"Item correto e literal. O risco é o candidato trocar 'destinatário predeterminado' por 'partes interessadas'."},
+
+  // ── CAP 3 — §§73-77: Supervisão e Revisão ─────────────────────────────────
+  {id:"c3_73a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§73-77: Supervisão e Revisão",ref:"NAT, §73",answer:"CERTO",
+   statement:"Todo o trabalho realizado pela equipe de auditoria, em todas as fases e em todos os níveis, deve ser adequadamente supervisionado, independentemente da competência individual dos auditores, para assegurar que os objetivos sejam atingidos, a qualidade seja assegurada e as equipes se desenvolvam.",
+   explanation:"A NAT (§73) é literal nesse sentido. A competência individual elevada não afasta a obrigação de supervisão.",
+   trap:"O candidato pode achar que auditores sêniores dispensariam supervisão — a norma não prevê essa exceção."},
+  {id:"c3_73b",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§73-77: Supervisão e Revisão",ref:"NAT, §74, III e V",answer:"ERRADO",
+   statement:"O foco da supervisão é exclusivamente o conteúdo dos achados, não abrangendo a observância do método de auditoria. Cabe ao supervisor assegurar que o relatório inclua todos os achados identificados, independentemente de sua relevância.",
+   explanation:"A NAT (§74) é clara: o foco da supervisão abrange tanto o conteúdo quanto a observância do método. Além disso, o §74,V exige que o relatório inclua os *achados relevantes*, não todos os achados identificados.",
+   trap:"Duplo erro: restringe o foco da supervisão apenas ao conteúdo (omitindo o método), e elimina o qualificador 'relevante' dos achados que devem constar do relatório."},
+  {id:"c3_74a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§73-77: Supervisão e Revisão",ref:"NAT, §74, IV",answer:"CERTO",
+   statement:"Compete ao supervisor assegurar que os papéis de trabalho sejam analisados conjuntamente com a equipe ou revisados e contenham evidências que suportem adequadamente os achados, as opiniões, as conclusões e as propostas de encaminhamento.",
+   explanation:"A NAT (§74, IV) atribui exatamente essa responsabilidade ao supervisor, no âmbito do foco da supervisão.",
+   trap:"O candidato pode confundir essa atribuição com a do coordenador na revisão (§76), mas é do supervisor na supervisão."},
+  {id:"c3_75a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§73-77: Supervisão e Revisão",ref:"NAT, §75",answer:"ERRADO",
+   statement:"A supervisão deve cobrir desde o planejamento até a emissão do relatório e pode ser exercida por qualquer auditor integrante da equipe que possua capacidade técnica reconhecida pela chefia imediata.",
+   explanation:"A NAT (§75) exige que a supervisão seja exercida por auditor que possua *perfil e competência profissional adequados ao trabalho* — não por qualquer integrante da equipe.",
+   trap:"Substitui a exigência qualificada ('perfil e competência profissional adequados') por 'qualquer auditor com capacidade técnica reconhecida pela chefia'."},
+  {id:"c3_75b",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§73-77: Supervisão e Revisão",ref:"NAT, §75, V",answer:"CERTO",
+   statement:"Entre as atribuições abrangidas pela supervisão inclui-se a identificação de alterações e melhorias necessárias à realização de futuras auditorias, que deverão ser registradas e levadas em conta nos futuros planejamentos de auditoria e em atividades de desenvolvimento de pessoal.",
+   explanation:"A NAT (§75, V) prevê exatamente isso como um dos âmbitos da supervisão, projetando seus efeitos para além do trabalho em curso.",
+   trap:"Item correto. O candidato pode achar que a supervisão se esgota no trabalho atual, sem projeção para auditorias futuras."},
+  {id:"c3_76a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§73-77: Supervisão e Revisão",ref:"NAT, §76",answer:"ERRADO",
+   statement:"A revisão do trabalho de auditoria compete ao supervisor, devendo ser feita de modo consolidado ao final da auditoria, antes da emissão do relatório.",
+   explanation:"A NAT (§76) prevê que a revisão compete ao *coordenador da equipe* (não ao supervisor) e deve ser feita *à medida que cada parte da auditoria vai se concluindo* (não de modo consolidado ao final).",
+   trap:"Duplo erro: atribui a revisão ao supervisor (quando é do coordenador) e inverte a lógica temporal (contínua → consolidada ao final)."},
+  {id:"c3_76b",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§73-77: Supervisão e Revisão",ref:"NAT, §§75 e 76",answer:"ERRADO",
+   statement:"Supervisão e revisão são atribuições fungíveis: qualquer um dos dois responsáveis — supervisor ou coordenador — pode exercer tanto uma quanto a outra, conforme a conveniência da equipe.",
+   explanation:"A NAT distingue rigidamente: a *supervisão* (§75) é atribuição do *supervisor*, e a *revisão* (§76) é atribuição do *coordenador da equipe*. *Não há fungibilidade* entre as funções.",
+   trap:"A aparente similaridade entre supervisão e revisão induz à crença de que seriam intercambiáveis. A norma as atribui a pessoas distintas com escopos distintos."},
+  {id:"c3_77a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§73-77: Supervisão e Revisão",ref:"NAT, §77",answer:"CERTO",
+   statement:"O papel da revisão é assegurar que todas as avaliações e conclusões estejam solidamente baseadas e suportadas por suficientes, adequadas, relevantes e razoáveis evidências, e que todos os erros, deficiências e questões relevantes tenham sido devidamente identificados, documentados e sanados ou levados ao conhecimento de um superior hierárquico.",
+   explanation:"A NAT (§77, I e II) descreve exatamente esses dois papéis da revisão, de forma cumulativa.",
+   trap:"Item correto que combina os dois incisos do §77. O candidato pode hesitar na expressão 'razoáveis evidências', mas ela está literal na norma."},
+  {id:"c3_77b",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§73-77: Supervisão e Revisão",ref:"NAT, §§76 e 77",answer:"ERRADO",
+   statement:"A revisão, a cargo do coordenador, tem por finalidade exclusiva verificar se os papéis de trabalho estão completos e organizados, não sendo sua atribuição identificar erros ou deficiências nos achados e nas conclusões da equipe.",
+   explanation:"A NAT (§77, II) determina expressamente que a revisão deve assegurar que *todos os erros, deficiências e questões relevantes tenham sido identificados, documentados e sanados*. A finalidade da revisão *vai muito além da organização documental*.",
+   trap:"Restringe artificialmente o papel da revisão à função burocrática de organização de papéis, omitindo sua função substantiva de controle de qualidade dos achados e conclusões."},
+
+  // ── CAP 3 — §93 e subitens ────────────────────────────────────────────────
+  {id:"c3_93a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §93: Escopo e Fatos Imprevistos",ref:"NAT, §93.1",answer:"ERRADO",
+   statement:"Nas situações em que os fatos identificados na execução relacionem-se de forma clara e lógica com o objetivo e as questões de auditoria, a equipe pode, autonomamente e sem necessidade de aprovação, alterar o planejamento.",
+   explanation:"A NAT (§93.1) permite que a própria equipe altere o planejamento nessas situações, mas as alterações *deverão ser submetidas ao supervisor para aprovação*. A autonomia da equipe existe, mas sujeita à aprovação do supervisor.",
+   trap:"Omite a exigência de aprovação pelo supervisor, tornando a decisão completamente unilateral da equipe."},
+  {id:"c3_93b",norma:"NAT/TCU",capitulo:"Capítulo 3 — §93: Escopo e Fatos Imprevistos",ref:"NAT, §93.1 e §93.2",answer:"ERRADO",
+   statement:"Fatos relacionados ao objetivo da auditoria mas que fogem ao escopo (§93.2) recebem o mesmo tratamento de fatos relacionados ao objetivo e às questões de auditoria (§93.1): em ambos os casos, a equipe pode alterar o planejamento, submetendo as alterações ao supervisor para aprovação.",
+   explanation:"A norma distingue: no §93.1 (fatos relacionados ao objetivo E às questões), a equipe pode alterar o planejamento com *aprovação do supervisor*. No §93.2 (fatos relacionados ao objetivo mas fora do escopo), a equipe, em conjunto com o supervisor E o *titular da unidade técnica coordenadora*, deve avaliar a oportunidade e conveniência. O envolvimento do *titular* é exigido apenas no §93.2.",
+   trap:"Equipara os dois cenários omitindo o envolvimento obrigatório do titular da unidade técnica no §93.2."},
+  {id:"c3_93c",norma:"NAT/TCU",capitulo:"Capítulo 3 — §93: Escopo e Fatos Imprevistos",ref:"NAT, §93.2",answer:"CERTO",
+   statement:"Nas situações em que, mesmo relacionados ao objetivo da auditoria, os fatos fogem ao escopo estabelecido, a equipe, em conjunto com o supervisor e o titular da unidade técnica coordenadora, deve avaliar a oportunidade e a conveniência de realizar exames no trabalho em curso, levando em conta que não haja desvirtuamento da auditoria inicial em termos de comprometimento do prazo e/ou dos exames planejados.",
+   explanation:"A NAT (§93.2) estabelece exatamente esse fluxo decisório tripartite (equipe + supervisor + titular), com a ressalva expressa sobre não haver desvirtuamento da auditoria inicial.",
+   trap:"Item correto e literal. O candidato pode errar por achar que apenas o supervisor precisaria ser envolvido."},
+  {id:"c3_93d",norma:"NAT/TCU",capitulo:"Capítulo 3 — §93: Escopo e Fatos Imprevistos",ref:"NAT, §93.2.1",answer:"CERTO",
+   statement:"Quando a hipótese de realização de exames no trabalho em curso (§93.2) for prejudicada, a equipe deve comunicar os fatos identificados ao titular da unidade técnica, que avaliará a conveniência e a oportunidade de propor nova ação de controle.",
+   explanation:"A NAT (§93.2.1) prevê exatamente esse fluxo subsidiário: prejudicada a hipótese do §93.2, a equipe comunica ao titular, que avalia a conveniência de nova ação de controle.",
+   trap:"Item correto. O candidato pode confundir com o §93.3, que trata de situação distinta (fatos incompatíveis com o objetivo)."},
+  {id:"c3_93e",norma:"NAT/TCU",capitulo:"Capítulo 3 — §93: Escopo e Fatos Imprevistos",ref:"NAT, §93.3 e §93.3.1",answer:"ERRADO",
+   statement:"Quando os fatos identificados na execução são incompatíveis com o objetivo ou com a natureza da ação de controle, caberá ao supervisor avaliar a conveniência de aprofundar os exames ou propor nova ação de controle; caso opte pelo aprofundamento, o relato deve ser feito no mesmo processo.",
+   explanation:"A NAT (§93.3) atribui a avaliação ao *titular da unidade técnica* (não ao supervisor). Além disso, o §93.3.1 exige que o relato seja feito em *processo apartado* quando houver aprofundamento no trabalho em andamento.",
+   trap:"Duplo erro: desloca a competência do titular para o supervisor, e elimina a exigência do processo apartado."},
+
+  // ── CAP 3 — §§94-97: Plano vs. Programa ──────────────────────────────────
+  {id:"c3_94a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§94-97: Plano e Programa",ref:"NAT, §94",answer:"CERTO",
+   statement:"Deve ser desenvolvido e documentado um plano para cada trabalho de auditoria, que evidenciará o objetivo, o escopo, o prazo e a alocação de recursos. Os programas de auditoria e seus eventuais ajustes devem ser registrados e aprovados antes do início da execução.",
+   explanation:"A NAT (§94) distingue o plano (que evidencia objetivo, escopo, prazo e recursos) dos programas de auditoria, e exige que estes e seus ajustes sejam aprovados antes da execução.",
+   trap:"Item correto. O candidato pode não perceber a distinção entre plano e programa, ambos previstos no §94."},
+  {id:"c3_94b",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§94-97: Plano e Programa",ref:"NAT, §94",answer:"ERRADO",
+   statement:"O plano de auditoria e o programa de auditoria são expressões sinônimas nas NAT, referindo-se ao mesmo documento que evidencia o objetivo, o escopo, o prazo, a alocação de recursos, os procedimentos e as técnicas a serem utilizadas.",
+   explanation:"A NAT (§94) distingue os dois instrumentos: o *plano* evidencia objetivo, escopo, prazo e alocação de recursos; o *programa* estabelece os procedimentos para identificar, analisar, avaliar e registrar informações. São documentos com finalidades e conteúdos distintos.",
+   trap:"A CEBRASPE frequentemente explora a confusão entre plano e programa de auditoria, que coexistem no §94 com finalidades diferentes."},
+  {id:"c3_95a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§94-97: Plano e Programa",ref:"NAT, §95",answer:"ERRADO",
+   statement:"O planejamento elaborado para cada trabalho de auditoria deve, entre outros aspectos, considerar elementos de conhecimento prévio sobre o objeto auditado facultativamente, pois a coleta dessas informações pode comprometer o prazo da auditoria.",
+   explanation:"A NAT (§95, II) é expressa: o planejamento deve '*necessariamente*' considerar elementos de conhecimento prévio sobre o objeto auditado, seus sistemas mais importantes, seus objetivos e riscos e a eficácia de seus controles internos. Não há facultatividade.",
+   trap:"Transforma em faculdade o que a norma prevê expressamente como obrigação ('necessariamente')."},
+  {id:"c3_95b",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§94-97: Plano e Programa",ref:"NAT, §95, III",answer:"CERTO",
+   statement:"O planejamento deve explicitar a natureza, a extensão e a profundidade dos exames a serem realizados e ser suficientemente detalhado de forma a não permitir equívocos na sua execução.",
+   explanation:"A NAT (§95, III) prevê exatamente esse requisito para o planejamento.",
+   trap:"Item correto e literal. O candidato pode achar que 'suficientemente detalhado' é subjetivo demais para ser exigido pela norma."},
+  {id:"c3_96a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§94-97: Plano e Programa",ref:"NAT, §96",answer:"CERTO",
+   statement:"Limitações de escopo em função de restrições de acesso a registros oficiais ou de outras condições específicas necessárias para planejar e conduzir a auditoria devem ser registradas para declaração no relatório de como isso afetou ou pode ter afetado os resultados do trabalho.",
+   explanation:"A NAT (§96) prevê exatamente essa obrigação de registro e declaração das limitações de escopo no relatório.",
+   trap:"Item correto. O candidato pode achar que as limitações só precisam ser declaradas se efetivamente afetarem os resultados, mas a norma inclui também as situações em que '*pode ter afetado*'."},
+  {id:"c3_97a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§94-97: Plano e Programa",ref:"NAT, §§94 e 97",answer:"ERRADO",
+   statement:"O plano de auditoria deve evidenciar o objetivo e o escopo da auditoria, o universo e a amostra a serem examinados, os procedimentos e as técnicas a serem utilizados, os critérios de auditoria, as informações requeridas e suas fontes e a quantificação dos recursos necessários.",
+   explanation:"Esses elementos descritos são os do *programa de auditoria* (§97), não do plano. O plano (§94) evidencia apenas o objetivo, o escopo, o prazo e a alocação de recursos. O nível de detalhamento descrito corresponde ao programa.",
+   trap:"Atribui ao plano o conteúdo do programa de auditoria — a distinção mais explorada pela banca nesse tema."},
+
+  // ── CAP 3 — §§100, 100.1 e 100.2 ─────────────────────────────────────────
+  {id:"c3_100a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§100-100.2: Achados",ref:"NAT, §§100.1 e 100.2",answer:"ERRADO",
+   statement:"As impropriedades envolvem a prática de ato de gestão ilegal, ilegítimo ou antieconômico, dano ao erário e desfalque ou desvio de dinheiros públicos, enquanto as irregularidades abrangem falhas de natureza formal de que não resulte dano ao erário.",
+   explanation:"A NAT inverte os conceitos: *impropriedades* (§100.1) são falhas de natureza formal sem dano ao erário e situações com potencial de inobservância a princípios. *Irregularidades* (§100.2) envolvem práticas de ato ilegal, ilegítimo, antieconômico, dano ao erário, desfalque ou desvio.",
+   trap:"Inversão clássica e deliberada dos conceitos de impropriedade e irregularidade — erro conceitual mais frequente nessa matéria."},
+  {id:"c3_100b",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§100-100.2: Achados",ref:"NAT, §100.1",answer:"CERTO",
+   statement:"As impropriedades abrangem não apenas falhas de natureza formal de que não resulte dano ao erário, mas também outras situações que têm o potencial para conduzir à inobservância aos princípios de administração pública ou à infração de normas legais e regulamentares, tais como deficiências no controle interno, violações de cláusulas, abuso, imprudência e imperícia.",
+   explanation:"A NAT (§100.1) define impropriedades exatamente nesses termos, incluindo tanto as falhas formais sem dano quanto as situações de potencial de inobservância a princípios.",
+   trap:"Item correto. O candidato pode achar que impropriedades se restringem a 'falhas formais sem dano', esquecendo a segunda categoria (potencial de inobservância)."},
+  {id:"c3_100c",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§100-100.2: Achados",ref:"NAT, §100.2",answer:"ERRADO",
+   statement:"A omissão no dever de prestar contas constitui impropriedade, por se tratar de falha de natureza formal que, embora relevante, não implica necessariamente dano ao erário.",
+   explanation:"A NAT (§100.2) enquadra a omissão no dever de prestar contas como *irregularidade*, não como impropriedade. O §100.2 cita expressamente 'omissão no dever de prestar contas' entre os exemplos de irregularidades.",
+   trap:"O raciocínio do item parece plausível (não prestar contas parece uma 'falha formal'), mas a NAT classifica expressamente esse caso como irregularidade."},
+
+  // ── CAP 3 — §108: Atributos das Evidências ────────────────────────────────
+  {id:"c3_108a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §108: Evidências",ref:"NAT, §108, I e II",answer:"ERRADO",
+   statement:"A validade de uma evidência diz respeito à garantia de que os mesmos resultados serão obtidos se a auditoria for repetida, enquanto a confiabilidade refere-se ao fato de a evidência ser legítima, baseada em informações precisas e confiáveis.",
+   explanation:"A NAT (§108) inverte: *validade* (I) é a legitimidade da evidência, baseada em informações precisas e confiáveis; *confiabilidade* (II) é a garantia de que os mesmos resultados serão obtidos se a auditoria for repetida.",
+   trap:"Inversão clássica entre validade e confiabilidade — um dos erros conceituais mais explorados pelo CEBRASPE nessa matéria."},
+  {id:"c3_108b",norma:"NAT/TCU",capitulo:"Capítulo 3 — §108: Evidências",ref:"NAT, §108, II",answer:"CERTO",
+   statement:"Para obter evidências confiáveis, é importante considerar que é conveniente usar diferentes fontes e diferentes abordagens; que fontes externas, em geral, são mais confiáveis que internas; que evidências documentais são mais confiáveis que orais; e que evidências obtidas por observação direta ou análise são mais confiáveis que as obtidas indiretamente.",
+   explanation:"A NAT (§108, II) elenca exatamente esses critérios de confiabilidade de forma literal.",
+   trap:"Item correto e literal. O candidato pode inverter a relação entre documentais e orais, ou entre fontes externas e internas."},
+  {id:"c3_108c",norma:"NAT/TCU",capitulo:"Capítulo 3 — §108: Evidências",ref:"NAT, §108, III",answer:"ERRADO",
+   statement:"Uma evidência é relevante se puder ser obtida por observação direta, independentemente de sua relação com os critérios e objetivos da auditoria, pois a forma de obtenção é o principal fator de relevância.",
+   explanation:"A NAT (§108, III) define relevância como a relação clara e lógica da evidência com os *critérios e objetivos da auditoria*. A forma de obtenção (observação direta ou indireta) é critério de confiabilidade (§108, II), não de relevância.",
+   trap:"Confunde dois atributos distintos: relevância (relação com critérios e objetivos) e confiabilidade (modo de obtenção). Troca o conteúdo de um pelo do outro."},
+  {id:"c3_108d",norma:"NAT/TCU",capitulo:"Capítulo 3 — §108: Evidências",ref:"NAT, §108, IV",answer:"CERTO",
+   statement:"A suficiência das evidências exige que a quantidade e qualidade obtidas persuadam o leitor de que os achados estão bem fundamentados; contudo, a quantidade de evidências não substitui a falta dos atributos de validade, confiabilidade e relevância. Quanto maior a materialidade, o risco e o grau de sensibilidade do auditado, maior será a necessidade de evidências mais robustas.",
+   explanation:"A NAT (§108, IV) é literal nesse sentido, incluindo a regra de que a quantidade não substitui os demais atributos e o critério de proporcionalidade com materialidade e risco.",
+   trap:"Item correto que combina todos os aspectos do §108, IV. O candidato pode questionar a expressão 'quantidade não substitui qualidade', mas ela está expressamente na norma."},
+  {id:"c3_108e",norma:"NAT/TCU",capitulo:"Capítulo 3 — §108: Evidências",ref:"NAT, §§108, I-IV",answer:"ERRADO",
+   statement:"Uma evidência pode ser considerada plenamente satisfatória se for suficiente em quantidade, mesmo que apresente deficiências quanto à validade ou à confiabilidade, desde que a robustez do conjunto supere as falhas individuais de cada elemento probatório.",
+   explanation:"A NAT (§108, IV) é expressa: *'a quantidade de evidências não substitui a falta dos outros atributos (validade, confiabilidade, relevância)'*. O raciocínio de *compensação* descrito no item *não tem amparo na norma*.",
+   trap:"O argumento de que o conjunto pode compensar falhas individuais parece razoável, mas contraria diretamente o texto da NAT."},
+
+  // ── CAP 3 — §§116.5-116.8.2: Papéis de Trabalho ──────────────────────────
+  {id:"c3_116_5",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§116.5-116.8.2: Papéis de Trabalho",ref:"NAT, §116.5",answer:"CERTO",
+   statement:"Os papéis de trabalho devem ser revisados para assegurar que o trabalho foi desenvolvido conforme o planejado e que as conclusões e os resultados estão de acordo com os registros.",
+   explanation:"A NAT (§116.5) prevê exatamente esse objetivo da revisão dos papéis de trabalho.",
+   trap:"Item correto e literal. O candidato pode confundir essa revisão dos papéis com a revisão do trabalho pelo coordenador (§76)."},
+  {id:"c3_116_6",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§116.5-116.8.2: Papéis de Trabalho",ref:"NAT, §116.6",answer:"ERRADO",
+   statement:"A primeira revisão dos papéis de trabalho deve ser realizada pelo coordenador da equipe, por ser a mais criteriosa e por ter a visão sistêmica necessária para verificar se as conclusões se coadunam com as apurações.",
+   explanation:"A NAT (§116.6) determina que a primeira revisão deve ser realizada pelo *próprio auditor* que elaborou o papel de trabalho, e deve ser a mais detalhada, para certificar-se de que suas conclusões se coadunam com suas apurações.",
+   trap:"Desloca a responsabilidade da primeira revisão do auditor elaborador para o coordenador, invertendo a lógica da norma."},
+  {id:"c3_116_7",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§116.5-116.8.2: Papéis de Trabalho",ref:"NAT, §116.7",answer:"CERTO",
+   statement:"As revisões executadas por quem não elaborou o papel de trabalho devem verificar se o trabalho foi desenvolvido conforme o planejado, se os registros estão adequados às conclusões e se não foram omitidos dados e informações imprescindíveis ou relevantes.",
+   explanation:"A NAT (§116.7) prevê exatamente esses três focos para as revisões realizadas por terceiro que não o autor do papel.",
+   trap:"Item correto. O candidato pode confundir com a revisão do próprio auditor (§116.6), que tem foco diferente."},
+  {id:"c3_116_8a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§116.5-116.8.2: Papéis de Trabalho",ref:"NAT, §116.8",answer:"CERTO",
+   statement:"Ao final da auditoria, todos os papéis de trabalho obtidos devem ser classificados em transitórios ou permanentes.",
+   explanation:"A NAT (§116.8) prevê exatamente essa classificação obrigatória ao final da auditoria.",
+   trap:"Item correto e literal. O candidato pode desconhecer a existência dessa classificação binária expressa na norma."},
+  {id:"c3_116_8b",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§116.5-116.8.2: Papéis de Trabalho",ref:"NAT, §§116.8.1 e 116.8.2",answer:"ERRADO",
+   statement:"Os papéis de trabalho transitórios são os de maior importância para a auditoria, pois documentam as principais conclusões e evidências; os permanentes são aqueles utilizados apenas temporariamente, para assegurar a execução de um procedimento ou a obtenção de outros papéis subsequentes.",
+   explanation:"A NAT inverte: *transitórios* (§116.8.1) são aqueles necessários ao trabalho somente por um período limitado, para assegurar a execução de um procedimento ou a obtenção de outros papéis subsequentes. *Permanentes* (§116.8.2) são todos os demais papéis não classificados como transitórios.",
+   trap:"Inversão completa dos conceitos de transitório e permanente — armadilha direta de troca de definições."},
+  {id:"c3_116_8c",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§116.5-116.8.2: Papéis de Trabalho",ref:"NAT, §116.8.2",answer:"ERRADO",
+   statement:"Os papéis de trabalho permanentes são apenas aqueles que documentam achados, evidências e conclusões definitivas, excluídos os papéis de caráter instrumental ou intermediário, classificados como transitórios.",
+   explanation:"A NAT (§116.8.2) define os papéis permanentes de forma residual e abrangente: são *todos os demais papéis de trabalho obtidos, não classificados como transitórios*. A norma não cria categorias dentro dos permanentes.",
+   trap:"O item tenta criar um critério qualitativo para os permanentes (apenas os 'definitivos'), mas a norma usa critério residual: tudo que não é transitório é permanente."},
+
+  // ── CAP 3 — §§120-121: Especialistas ─────────────────────────────────────
+  {id:"c3_120a",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§120-121: Especialistas",ref:"NAT, §120",answer:"CERTO",
+   statement:"Quando um especialista compõe a equipe de auditoria ou quando a equipe se utiliza do trabalho de um especialista, em qualquer dos casos a unidade técnica coordenadora do trabalho deverá avaliar a capacidade do especialista em realizar o trabalho e apresentar os resultados de forma imparcial, especialmente a sua competência profissional e independência em relação ao objeto da auditoria.",
+   explanation:"A NAT (§120) prevê essa avaliação pela unidade técnica coordenadora em ambas as situações: quando o especialista compõe a equipe e quando o trabalho do especialista é utilizado sem que ele integre a equipe.",
+   trap:"Item correto. O candidato pode achar que a avaliação do especialista interno seria desnecessária ou que seria atribuição da equipe (não da unidade técnica coordenadora)."},
+  {id:"c3_120b",norma:"NAT/TCU",capitulo:"Capítulo 3 — §§120-121: Especialistas",ref:"NAT, §§120 e 121",answer:"ERRADO",
+   statement:"As informações contidas em trabalhos realizados por especialistas que componham a equipe de auditoria integrarão o relatório como evidências; as de especialistas que não componham a equipe não podem ser utilizadas diretamente como evidências, devendo ser reprocessadas pela equipe antes de integrar o relatório.",
+   explanation:"A NAT (§121) prevê que as informações de especialistas *que não componham a equipe* integrarão o relatório como evidências. A norma não cria a distinção descrita no item — não há vedação nem exigência de reprocessamento para especialistas externos.",
+   trap:"Inverte a lógica: a NAT trata especificamente dos especialistas que *não* compõem a equipe como produtores de evidências diretas, e o item cria restrição inexistente para esse caso."},
+
+  // ── CAP 4 — §129: Requisitos de Qualidade ────────────────────────────────
+  {id:"c4_129a",norma:"NAT/TCU",capitulo:"Capítulo 4 — §129: Qualidade do Relatório",ref:"NAT, §129, I",answer:"ERRADO",
+   statement:"O requisito de clareza exige que os relatórios de auditoria utilizem terminologia técnica especializada e expressões em idiomas estrangeiros, ainda que possuam tradução adequada para o português, a fim de demonstrar o domínio técnico dos auditores sobre a matéria.",
+   explanation:"A NAT (§129, I) exige o oposto: o auditor deve evitar a erudição, o preciosismo, o jargão e *restringir ao máximo* a utilização de expressões em outros idiomas, exceto quando não possuam tradução adequada para o português e já sejam corriqueiras.",
+   trap:"Inverte completamente o requisito de clareza: a norma exige linguagem acessível, não demonstração de erudição técnica."},
+  {id:"c4_129b",norma:"NAT/TCU",capitulo:"Capítulo 4 — §129: Qualidade do Relatório",ref:"NAT, §129, II",answer:"CERTO",
+   statement:"O requisito de convicção impõe que os achados e as conclusões sejam expostos com firmeza, evitando-se palavras ou expressões que denotem insegurança ou possam ensejar dúvidas, tais como 'supõe-se', 'parece que', 'há indícios', 'esta equipe de auditoria entende que' e 'aparentemente'.",
+   explanation:"A NAT (§129, II) prevê exatamente esse requisito, listando literalmente essas expressões a serem evitadas.",
+   trap:"Item correto e literal. O candidato pode achar que 'há indícios' seja uma expressão neutra aceitável em relatório de auditoria."},
+  {id:"c4_129c",norma:"NAT/TCU",capitulo:"Capítulo 4 — §129: Qualidade do Relatório",ref:"NAT, §129, III",answer:"ERRADO",
+   statement:"O requisito de concisão determina que o relatório não exceda trinta páginas em qualquer hipótese, sendo vedada a superação desse limite mesmo quando houver achados de alta complexidade ou em grande quantidade.",
+   explanation:"A NAT (§129, III) prevê o limite de trinta páginas como regra geral, *exceto* quando houver achados de alta complexidade ou em grande quantidade, a critério do titular da unidade técnica coordenadora. Há exceção expressa.",
+   trap:"Transforma em regra absoluta o que a norma prevê como limite com exceção expressa."},
+  {id:"c4_129d",norma:"NAT/TCU",capitulo:"Capítulo 4 — §129: Qualidade do Relatório",ref:"NAT, §129, IV",answer:"CERTO",
+   statement:"O requisito de completude exige que o relatório apresente toda a informação e todos os elementos necessários para satisfazer os objetivos da auditoria, sendo completo também no sentido de determinar claramente o que devia e não foi feito e de descrever explicitamente as limitações dos dados e as restrições de acesso a registros.",
+   explanation:"A NAT (§129, IV) prevê exatamente esse conteúdo para o requisito de completude, incluindo a necessidade de descrever limitações e o que não foi feito.",
+   trap:"Item correto. O candidato pode achar que completude se refere apenas ao que foi feito, esquecendo que a norma exige também declaração do que não foi feito."},
+  {id:"c4_129e",norma:"NAT/TCU",capitulo:"Capítulo 4 — §129: Qualidade do Relatório",ref:"NAT, §129, V",answer:"ERRADO",
+   statement:"O requisito de exatidão é satisfeito quando o relatório apresenta informações convincentes e persuasivas, ainda que com pequenas imprecisões, pois o objetivo é convencer o leitor e não necessariamente retratar com fidelidade absoluta a realidade dos fatos.",
+   explanation:"A NAT (§129, V) é expressa: a exatidão é necessária para assegurar ao leitor que o que foi relatado é *fidedigno e confiável*, e *'um erro pode pôr em dúvida a validade de todo o relatório'*. *Não há margem para imprecisões aceitáveis*.",
+   trap:"O argumento da 'persuasão' em detrimento da fidelidade é sofisticado e plausível, mas contraria diretamente o texto da NAT."},
+  {id:"c4_129f",norma:"NAT/TCU",capitulo:"Capítulo 4 — §129: Qualidade do Relatório",ref:"NAT, §129, VI",answer:"CERTO",
+   statement:"O requisito de relevância exige que o relatório exponha apenas aquilo que tem importância dentro do contexto e que deve ser levado em consideração em face dos objetivos da auditoria, não se discorrendo sobre fatos ou ocorrências que não contribuem para as conclusões e não resultem em propostas de encaminhamento.",
+   explanation:"A NAT (§129, VI) prevê exatamente esse requisito de relevância.",
+   trap:"Item correto e literal. O candidato pode confundir o requisito de relevância do relatório (§129, VI) com o atributo de relevância das evidências (§108, III)."},
+  {id:"c4_129g",norma:"NAT/TCU",capitulo:"Capítulo 4 — §129: Qualidade do Relatório",ref:"NAT, §129, VII",answer:"ERRADO",
+   statement:"O requisito de tempestividade determina que a qualidade do relatório deve ser priorizada em detrimento do prazo previsto, sendo admissível a dilação de prazos sempre que necessária para assegurar a completude e a exatidão das informações relatadas.",
+   explanation:"A NAT (§129, VII) determina que os auditores devem cumprir o prazo previsto para elaboração do relatório *sem comprometer a qualidade*. Não há hierarquia entre prazo e qualidade — ambos devem ser observados.",
+   trap:"O item cria uma falsa hierarquia que não existe na norma: qualidade sobre prazo. A NAT exige os dois concomitantemente."},
+  {id:"c4_129h",norma:"NAT/TCU",capitulo:"Capítulo 4 — §129: Qualidade do Relatório",ref:"NAT, §129, VIII",answer:"CERTO",
+   statement:"O requisito de objetividade impõe que as evidências sejam apresentadas de forma imparcial e que a comunicação seja justa e não enganosa, resguardando-se contra a tendência de exagerar ou superenfatizar deficiências, sendo vedado o uso de comentários entre aspas com sentido dúbio ou irônico.",
+   explanation:"A NAT (§129, VIII) prevê exatamente esses elementos do requisito de objetividade, incluindo a vedação a comentários irônicos ou dúbios.",
+   trap:"Item correto. O candidato pode hesitar na vedação a comentários irônicos, por achar que é detalhe menor — mas está expressamente na norma."},
+
+  // ── CAP 4 — §§138-148: Apresentação dos Achados e Comentários ──────────
+  {id:"c4_138a",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §138",answer:"CERTO",
+   statement:"Os achados de auditoria devem ser desenvolvidos com base na matriz de achados e o relatório deve descrever cada achado contemplando, quando aplicável: descrição ou título do achado, situação encontrada, objetos nos quais foi constatado, critério adotado, evidências, causas, efeitos reais ou potenciais, responsável, esclarecimentos prestados, conclusão da equipe e proposta de encaminhamento.",
+   explanation:"A NAT (§138, I-XI) lista exatamente esses onze aspectos para a descrição de cada achado no relatório.",
+   trap:"Item correto e literal. O candidato pode errar por não lembrar que 'objetos nos quais foi constatado' é um dos aspectos listados."},
+  {id:"c4_138b",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §138 e §139",answer:"ERRADO",
+   statement:"Os elementos listados no §138 para a apresentação dos achados são exaustivos e imutáveis, não podendo manuais ou normas específicas restringi-los ou acrescentar outros, sob pena de violação das NAT.",
+   explanation:"A NAT (§139) é expressa: 'manuais, padrões e normas mais específicos podem *restringir* ou estabelecer que *outros elementos* sejam relatados na apresentação dos achados'. Os elementos do §138 não são exaustivos nem imutáveis.",
+   trap:"Transforma em rol taxativo e imutável o que a norma prevê como base flexível, sujeita a complementação ou restrição por normas específicas."},
+  {id:"c4_140a",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §140",answer:"CERTO",
+   statement:"Para dar ao leitor uma base para avaliar a importância e as consequências dos achados, os auditores devem, conforme aplicável, relatar as situações encontradas em termos da população ou do número de casos examinados e quantificar os resultados em termos de valor monetário ou de outras medidas; se não puderem mensurar, devem limitar adequadamente suas conclusões.",
+   explanation:"A NAT (§140) prevê exatamente essas diretrizes para a apresentação dos achados em perspectiva quantitativa.",
+   trap:"Item correto. O candidato pode achar que a quantificação é sempre obrigatória, quando a norma usa 'conforme aplicável'."},
+  {id:"c4_141a",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §141",answer:"ERRADO",
+   statement:"Em auditorias operacionais, os achados devem ser apresentados em ordem cronológica de identificação, de modo a demonstrar ao leitor a sequência da investigação realizada pela equipe.",
+   explanation:"A NAT (§141) determina que em auditorias operacionais os achados devem ser apresentados em *ordem decrescente de relevância*, iniciando-se pelo tema mais importante. A ordem cronológica de identificação não tem amparo na norma.",
+   trap:"Substitui o critério de relevância (decrescente) pelo critério temporal (cronológico de identificação)."},
+  {id:"c4_141b",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §141",answer:"CERTO",
+   statement:"Em auditorias operacionais, outra forma de organizar o texto dos achados é partir dos temas mais gerais para os mais específicos, o que pode ser a melhor maneira de apresentar assuntos complexos e interligados cuja compreensão seja facilitada a partir da leitura de achados que introduzam o contexto.",
+   explanation:"A NAT (§141) prevê expressamente essa alternativa de organização dos achados em auditorias operacionais.",
+   trap:"Item correto. O candidato pode achar que a única forma válida é a ordem decrescente de relevância, mas a norma admite a alternativa temática (geral → específico)."},
+  {id:"c4_142a",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §142",answer:"CERTO",
+   statement:"Caso a situação encontrada seja avaliada como irregularidade grave que justifique audiência para eventual aplicação de multa ou conversão em tomada de contas especial, os responsáveis devem ser devidamente identificados em rol juntado ao processo e a avaliação de culpabilidade deve ser desenvolvida com base em matriz de responsabilização.",
+   explanation:"A NAT (§142) prevê exatamente esse fluxo para a hipótese de irregularidade grave com potencial de multa ou tomada de contas especial.",
+   trap:"Item correto. O candidato pode não lembrar da exigência específica da matriz de responsabilização nesse contexto."},
+  {id:"c4_143a",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §143",answer:"ERRADO",
+   statement:"Os esclarecimentos dos responsáveis sobre os achados preliminares devem ser incorporados ao relatório de forma consolidada em seção específica, independentemente de o achado ter subsistido ou não após a manifestação.",
+   explanation:"A NAT (§143) prevê que os esclarecimentos devem ser incorporados *individualmente*, como um dos aspectos de *cada achado*, e apenas *se o achado subsistir* após os esclarecimentos. Achados desconstituídos pelos esclarecimentos não devem ser reportados.",
+   trap:"Duplo erro: prevê incorporação consolidada em vez de individual por achado, e suprime a condição de subsistência do achado."},
+  {id:"c4_143b",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §143",answer:"CERTO",
+   statement:"Achados preliminares desconstituídos após os esclarecimentos dos responsáveis não devem ser reportados no relatório final de auditoria.",
+   explanation:"A NAT (§143) é expressa ao condicionar a incorporação dos esclarecimentos à subsistência do achado: 'individualmente, se o achado subsistir'. Portanto, achados desconstituídos pelos esclarecimentos não devem constar do relatório.",
+   trap:"Item correto. O candidato pode achar que todos os achados preliminares, mesmo os desconstituídos, deveriam constar do relatório por razões de transparência."},
+  {id:"c4_144a",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §144",answer:"CERTO",
+   statement:"Um dos modos mais efetivos para assegurar que um relatório seja imparcial, objetivo e completo é submeter o relatório preliminar para obtenção de comentários por parte dos dirigentes da entidade auditada; a inclusão desses comentários no relatório final resulta em documento que apresenta não só os achados da equipe, mas também a perspectiva dos dirigentes e as ações corretivas que pretendem tomar.",
+   explanation:"A NAT (§144) prevê exatamente essa finalidade e esse resultado da submissão do relatório preliminar para comentários dos gestores.",
+   trap:"Item correto e literal. O candidato pode achar que submeter o relatório para comentários compromete a independência da equipe."},
+  {id:"c4_145a",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §§145 e 145.2",answer:"ERRADO",
+   statement:"Tanto nas auditorias operacionais quanto nas demais fiscalizações, a regra é submeter a íntegra do relatório preliminar aos comentários dos gestores, sendo que a remessa de excertos é vedada por comprometer a compreensão sistêmica dos achados.",
+   explanation:"A NAT (§145) distingue: nas auditorias operacionais, submete-se o relatório preliminar completo (inclusive achados, conclusões e propostas). Nas demais fiscalizações, a regra é encaminhar *excerto* do relatório preliminar contendo apenas os elementos dos achados que resultarem em proposta de determinação e/ou recomendação. Além disso, deliberações do tipo 'Ciência' dispensam remessa preliminar (§145.2).",
+   trap:"Homogeneíza as duas situações (operacional e demais) aplicando a mesma regra, quando a norma as trata de forma diferente."},
+  {id:"c4_145b",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §145.1",answer:"CERTO",
+   statement:"As propostas de encaminhamento não devem ser incluídas no documento a ser comentado pelos gestores caso a sua divulgação coloque em risco os objetivos da auditoria.",
+   explanation:"A NAT (§145.1) prevê exatamente essa exceção à regra de incluir propostas de encaminhamento no documento enviado para comentários.",
+   trap:"Item correto. O candidato pode achar que as propostas sempre deveriam ser incluídas para que os gestores possam comentá-las adequadamente."},
+  {id:"c4_145c",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §145.4",answer:"CERTO",
+   statement:"Caso o relatório preliminar, ou excerto deste, não seja encaminhado para comentários dos gestores, os motivos que dispensaram ou levaram ao não atendimento desse comando devem ser registrados no próprio relatório.",
+   explanation:"A NAT (§145.4) prevê exatamente essa obrigação de registro dos motivos no relatório quando a submissão prévia não ocorrer.",
+   trap:"Item correto. O candidato pode achar que a dispensa da remessa preliminar não exige qualquer justificativa formal no relatório."},
+  {id:"c4_146a",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §146",answer:"ERRADO",
+   statement:"O documento a ser submetido aos gestores deve ser revisado pelo coordenador da equipe antes de sua remessa, e o prazo concedido aos gestores para encaminhar seus comentários deve ser padronizado em quinze dias, independentemente da complexidade do tema tratado.",
+   explanation:"A NAT (§146) exige que o documento seja revisado pelo *supervisor* (não pelo coordenador) antes da remessa, e que o prazo seja 'compatível com a complexidade do tema tratado' — não há prazo padronizado.",
+   trap:"Duplo erro: atribui a revisão prévia ao coordenador (quando é do supervisor) e cria prazo fixo inexistente na norma."},
+  {id:"c4_146b",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §146",answer:"CERTO",
+   statement:"O ofício de remessa do relatório preliminar deve informar que a obtenção de comentários dos gestores não representa abertura do contraditório e, portanto, não significa exercício de direito de defesa, e que a não apresentação dos comentários no prazo estipulado não impedirá o andamento normal do processo nem será considerada motivo de sanção.",
+   explanation:"A NAT (§146) prevê exatamente esse conteúdo obrigatório do ofício de remessa do relatório preliminar.",
+   trap:"Item correto. O candidato pode achar que a remessa do relatório para comentários abre o contraditório administrativo."},
+  {id:"c4_146c",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §146.1",answer:"CERTO",
+   statement:"O ofício de remessa do relatório, ou excerto deste, deve solicitar aos gestores que encaminhem seus comentários contemplando a perspectiva dos dirigentes e as ações corretivas que pretendem tomar, bem como sobre as propostas de determinação e/ou recomendação formuladas, informando sobre as consequências práticas da implementação das medidas aventadas e eventuais alternativas.",
+   explanation:"A NAT (§146.1) prevê exatamente esse conteúdo a ser solicitado a título de comentários dos gestores.",
+   trap:"Item correto e literal. O candidato pode achar que os gestores deveriam apenas concordar ou discordar dos achados, sem que se solicitem alternativas."},
+  {id:"c4_147a",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §147",answer:"ERRADO",
+   statement:"Os comentários dos gestores devem ser transcritos integralmente no relatório final, na ordem em que foram recebidos, sendo vedado à equipe resumi-los ou selecioná-los para não comprometer a fidedignidade da manifestação dos dirigentes.",
+   explanation:"A NAT (§147) determina que os comentários devem ser incorporados, *de forma resumida*, no relato dos achados — portanto, a transcrição integral não é exigida nem a ordem de recebimento é o critério de apresentação.",
+   trap:"Transforma em exigência de transcrição integral o que a norma prevê como incorporação resumida. Inverte também a obrigação ao proibir o resumo."},
+  {id:"c4_147b",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §§147 e 148",answer:"CERTO",
+   statement:"Os comentários dos gestores serão analisados pela equipe juntamente com os demais fatos, devendo constar da análise a informação de que foram feitas alterações no relatório em razão dos comentários recebidos; o documento encaminhado pelo gestor se constituirá em papel de trabalho da auditoria.",
+   explanation:"A NAT (§§147 e 148) prevê exatamente esses dois aspectos: registro das alterações decorrentes dos comentários (§147) e a constituição do documento do gestor como papel de trabalho (§148).",
+   trap:"Item correto que combina dois parágrafos distintos. O candidato pode hesitar sobre o documento do gestor ser papel de trabalho."},
+  {id:"c4_148a",norma:"NAT/TCU",capitulo:"Capítulo 4 — §§138-148: Achados e Comentários",ref:"NAT, §148",answer:"ERRADO",
+   statement:"O documento encaminhado pelo gestor com seus comentários ao relatório preliminar não se constitui em papel de trabalho da auditoria, pois foi produzido pela entidade auditada e não pelo auditor, contrariando o requisito de que papéis de trabalho sejam elaborados pela equipe.",
+   explanation:"A NAT (§148) prevê expressamente que 'o documento encaminhado pelo gestor se constituirá em papel de trabalho da auditoria'. Além disso, o §112 já define que papéis de trabalho incluem aqueles preparados pelo *auditado ou por terceiros*.",
+   trap:"O raciocínio do item é internamente coerente, mas ignora que a NAT define papéis de trabalho de forma ampla, incluindo documentos do auditado (§112), e ainda menciona expressamente o documento do gestor como papel de trabalho (§148)."}
+];
+/* ══════════════════════════════════════════
+   STATE & STORAGE
+══════════════════════════════════════════ */
+const SK = "malu_v1";
+let importedQ = [];
+let st = {
+  page: "inicio",
+  // questoes state
+  qNorma: null, qCap: null, qIdx: 0,
+  qFilter: "all", qSearch: "",
+  answers: {},    // {id: "CERTO"|"ERRADO"}
+  history: {},    // {id: [{answer,correct,ts}]}
+  flags: {},      // {id: true}
+  notes: {},      // {id: "text"}
+  deleted: {},    // {id: true}
+  // artigo state
+  artigoMat: null, artigoNorma: null, artigoCap: null, artigoTopico: null,
+  artigoNotes: {},     // {ref: 'text'}
+  artigoHighlights: {}, // {ref: {color:'#hex', text:'...'} }
+  _colorPickerRef: null,
+  _noteRef: null,
+  // pending delete
+  _pendingDel: null,
+  revealed: {},
+  _filterOpen: false,
+};
+
+function save(){
+  try{ localStorage.setItem(SK, JSON.stringify({
+    answers:st.answers, history:st.history, flags:st.flags,
+    notes:st.notes, deleted:st.deleted, importedQ,
+    revealed:st.revealed, matMap, artigoTopicos,
+    artigoNotes:st.artigoNotes, artigoHighlights:st.artigoHighlights,
+  }));}catch(_){}
+  scheduleSyncPush();
+}
+function load(){
+  try{
+    const d = JSON.parse(localStorage.getItem(SK)||"{}");
+    if(d.answers) st.answers=d.answers;
+    if(d.history) st.history=d.history;
+    if(d.flags)   st.flags=d.flags;
+    if(d.notes)   st.notes=d.notes;
+    if(d.deleted) st.deleted=d.deleted;
+    if(d.importedQ) importedQ=d.importedQ;
+    if(d.revealed) st.revealed=d.revealed;
+    if(d.matMap) matMap=d.matMap;
+    if(d.artigoTopicos) artigoTopicos=d.artigoTopicos;
+    if(d.artigoNotes) st.artigoNotes=d.artigoNotes;
+    if(d.artigoHighlights) st.artigoHighlights=d.artigoHighlights;
+  }catch(_){}
+}
+
+/* ══════════════════════════════════════════
+   DATA HELPERS
+══════════════════════════════════════════ */
+function allQ(){ return [...Q,...importedQ].filter(q=>!st.deleted[q.id]); }
+
+function normas(){
+  const m={};
+  allQ().forEach(q=>{
+    if(!m[q.norma]) m[q.norma]=[];
+    m[q.norma].push(q);
+  });
+  return m;
+}
+
+// Group by matéria → norma → capitulo
+// We infer matéria from norma name (could be customized)
+// Using stored mat mapping
+
+
+
+const ARTIGOS = {
+  "NAT, §15": "O termo \"auxílio\", disposto no caput do artigo 71 da Constituição, não representa subordinação hierárquica do Tribunal em relação ao Congresso Nacional. O TCU exerce competências próprias, independentes das funções do Congresso Nacional, e de suas decisões não cabem recursos ao Congresso Nacional ou a outros Poderes, se não no seu próprio âmbito.",
+  "NAT, §19": "Complemento importante à independência do TCU é a disposição dos recursos financeiros e orçamentários necessários ao desempenho de suas atribuições, caracterizada pela existência de dotações próprias na lei orçamentária anual, pela elaboração de seu próprio orçamento, sem a interferência de terceiros, pela execução orçamentária e financeira por unidade de sua própria estrutura administrativa, pelo recebimento de recursos do tesouro segundo parâmetros não discricionários e pela não sujeição a limitações de empenho e movimentação financeira por outro órgão ou Poder.",
+  "NAT, §§4 e 6": "§4. As NAT têm natureza técnica, e não jurídica, geral, e não específica, e são aplicáveis a todos os aspectos da função auditoria.\n§6. Em relação às demais ações de controle, elas têm aplicação subsidiária, devendo os auditores observar as normas de controle externo dispostas na Constituição, na Lei Orgânica, no Regimento Interno e nas resoluções, portarias, instruções e decisões normativas do próprio TCU.",
+  "NAT, §7": "As ISSAI da Intosai são aplicáveis em complemento às NAT, especialmente nas situações em que o assunto não for explicitamente tratado nas NAT, e desde que compatíveis com as atribuições constitucionais e legais do TCU, com o ordenamento jurídico pátrio e com as disposições e a lógica destas normas.",
+  "NAT, §9": "Outras normas profissionais, como as emitidas pelo IIA/Audibra, podem ser aplicadas conjuntamente com as NAT, prevalecendo essas últimas quando houver algum grau de incompatibilidade.",
+  "NAT, §27": "O controle externo constitui o monitoramento das relações de accountability que se estabelecem entre o Congresso Nacional e os gestores que recebem uma delegação de recursos públicos, isso inclui qualquer pessoa física ou jurídica, pública ou privada, que utilize, arrecade, guarde, gerencie ou administre dinheiros, bens e valores públicos ou pelos quais a União responda.",
+  "NAT, §21": "Mesmo quando trabalha como um agente do Parlamento e realiza fiscalizações para atender às suas solicitações, o Tribunal atua resguardando a sua independência e autonomia.",
+  "NAT, §22": "A jurisdição própria e privativa sobre as pessoas e matérias sujeitas à sua competência não significa que tais pessoas tenham relação de subordinação ao TCU. Os administradores e demais responsáveis são plena e exclusivamente responsáveis por suas ações e omissões e não poderão alegar absolvição com base em verificações realizadas pelo TCU ou em opiniões de seu corpo técnico, a menos que sobre tais verificações tenham sido emitidos julgamentos legalmente válidos.",
+  "NAT, §23": "A Constituição estabelece dois sistemas de controle: o externo, exercido pelo Congresso Nacional com o auxílio do TCU e o interno, no âmbito de cada Poder. Embora o controle interno tenha o dever estabelecido constitucionalmente de apoiar o controle externo, não há relação de hierarquia entre eles, há complementaridade.",
+  "NAT, §64": "O planejamento geral deve alinhar suas atividades às expectativas do Congresso Nacional, às medidas, aos gastos e aos objetivos do plano plurianual e de outros planos específicos de ação governamental, observando-se a compatibilidade com os planos estratégico e de diretrizes do TCU, bem como com as diretrizes aprovadas para subsidiar o exame das contas governamentais.",
+  "NAT, §65": "O planejamento geral deve documentar e justificar as seleções realizadas, calcando-se em modelos que incluam métodos de seleção, hierarquização e priorização fundamentados em critérios de relevância, materialidade, risco e oportunidade.",
+  "NAT, §66": "Informações sobre o planejamento geral somente poderão ser divulgadas para dar publicidade à ação fiscalizatória do Tribunal, se não comprometerem o sigilo dos trabalhos a serem realizados.",
+  "NAT, §§67 e 93.1": "§67. A unidade técnica ao propor auditorias deve definir o objetivo e o escopo preliminar.\n§93.1. O planejamento é passível de mudanças durante a realização dos trabalhos pela própria equipe de auditoria, as quais deverão ser submetidas ao supervisor para aprovação.",
+  "NAT, §70": "Deve-se determinar os meios apropriados para alcançar os objetivos de auditoria, levando em conta limitações de tempo e de recursos disponíveis e, especialmente, a competência necessária dos membros da equipe.",
+  "NAT, §73": "Todo o trabalho realizado pela equipe de auditoria, em todas as fases e em todos os níveis, deve ser adequadamente supervisionado, independentemente da competência individual dos auditores, para assegurar que os objetivos sejam atingidos, a qualidade seja assegurada e as equipes se desenvolvam.",
+  "NAT, §74, III e V": "§74, III. O programa de auditoria e a estratégia de ação nele prevista visem a achados relevantes e sejam seguidos, a menos que alguma alteração seja autorizada.\n§74, V. O relatório de auditoria inclua os achados relevantes refletidos nos papéis de trabalho, bem como as opiniões, conclusões e propostas de encaminhamento formuladas pela equipe de auditoria.",
+  "NAT, §74, IV": "Os papéis de trabalho sejam analisados conjuntamente com a equipe ou revisados e contenham as evidências que suportem adequadamente os achados, as opiniões, conclusões e propostas de encaminhamento.",
+  "NAT, §75": "A supervisão deve cobrir desde o planejamento até a emissão do relatório, deve ser exercida por auditor que possua perfil e competência profissional adequados ao trabalho.",
+  "NAT, §75, V": "A identificação de alterações e melhorias necessárias à realização de futuras auditorias, que deverão ser registradas e levadas em conta nos futuros planejamentos de auditoria e em atividades de desenvolvimento de pessoal.",
+  "NAT, §76": "Todo o trabalho de auditoria deve ser revisado pelo coordenador da equipe de auditoria, que possua perfil e competência profissional adequados ao trabalho, antes de o relatório ser emitido. A revisão deve ser feita à medida que cada parte da auditoria vai se concluindo.",
+  "NAT, §§75 e 76": "§75. A supervisão deve ser exercida por auditor que possua perfil e competência profissional adequados ao trabalho.\n§76. Todo o trabalho de auditoria deve ser revisado pelo coordenador da equipe de auditoria, antes de o relatório ser emitido. A revisão deve ser feita à medida que cada parte da auditoria vai se concluindo.",
+  "NAT, §77, II": "O papel da revisão é assegurar que todos os erros, deficiências e questões relevantes tenham sido devidamente identificados, documentados e sanados satisfatoriamente ou levados ao conhecimento de um superior hierárquico da unidade técnica.",
+  "NAT, §§76 e 77": "§76. A revisão deve ser feita à medida que cada parte da auditoria vai se concluindo.\n§77. O papel da revisão é assegurar que: I. todas as avaliações e conclusões estejam solidamente baseadas e suportadas por suficientes evidências; II. todos os erros, deficiências e questões relevantes tenham sido devidamente identificados, documentados e sanados ou levados ao conhecimento de um superior hierárquico.",
+  "NAT, §80": "Eventuais situações de obstrução ao livre exercício da auditoria ou de sonegação de processo, bem como qualquer ocorrência de ameaça velada ou explícita, de animosidade ou de intimidação de auditores deverão ser comunicadas imediatamente ao supervisor do trabalho. O supervisor deverá levar o fato ao conhecimento do titular da unidade técnica coordenadora do trabalho.",
+  "NAT, §84": "O ofício de apresentação da equipe de auditoria, bem como eventuais reiterações de ofícios de requisição de documentos, deve consignar a possibilidade de aplicação da multa prevista no art. 58, incisos V e VI, da Lei 8.443/1992, no caso de obstrução ao livre exercício das auditorias ou de sonegação de processo, documento ou informação.",
+  "NAT, §86.2": "Na apresentação das constatações, deve-se mencionar a situação encontrada, o critério de auditoria, e por decisão da equipe, as causas e os efeitos. Não se deve fazer menção a conclusões ou propostas de encaminhamento.",
+  "NAT, §92": "O escopo da auditoria deve ser estabelecido de modo suficiente a satisfazer os objetivos do trabalho. O escopo envolve a definição das questões de auditoria, a profundidade e o detalhamento dos procedimentos, a delimitação do universo auditável (abrangência), a configuração da amostra (extensão) e a oportunidade dos exames.",
+  "NAT, §93.1": "Nas situações em que os fatos relacionem-se de forma clara e lógica com o objetivo e as questões de auditoria, o planejamento é passível de mudanças durante a realização dos trabalhos pela própria equipe de auditoria, as quais deverão ser submetidas ao supervisor para aprovação.",
+  "NAT, §§93.1 e 93.2": "§93.1. O planejamento é passível de mudanças pela própria equipe de auditoria, as quais deverão ser submetidas ao supervisor para aprovação.\n§93.2. Nas situações em que os fatos fogem ao escopo estabelecido, a equipe, em conjunto com o supervisor e o titular da unidade técnica coordenadora, deve avaliar a oportunidade e a conveniência de realizar exames no trabalho em curso.",
+  "NAT, §93.2": "Nas situações em que, mesmo relacionados ao objetivo da auditoria, os fatos fogem ao escopo estabelecido, mas a consistência das evidências encontradas recomende sua abordagem, a equipe, em conjunto com o supervisor e o titular da unidade técnica coordenadora, deve avaliar a oportunidade e a conveniência de realizar exames para desenvolver achados no trabalho em curso, levando em conta que não haja desvirtuamento da auditoria inicial em termos de comprometimento do prazo e/ou dos exames planejados.",
+  "NAT, §93.2.1": "Prejudicada a hipótese, a equipe deve comunicar os fatos identificados ao titular da unidade técnica, que avaliará a conveniência e a oportunidade de propor nova ação de controle.",
+  "NAT, §93.3 e §93.3.1": "§93.3. Nas situações em que os fatos sejam incompatíveis com o objetivo ou com a natureza da ação de controle, caberá ao titular da unidade técnica avaliar a conveniência e a oportunidade de aprofundar os exames.\n§93.3.1. Na hipótese de aprofundamento dos exames no trabalho em andamento, o relato e as propostas de encaminhamento deverão ser feitos em processo apartado.",
+  "NAT, §§93.3 e 93.3.1": "§93.3. Caberá ao titular da unidade técnica avaliar a conveniência e a oportunidade de aprofundar os exames acerca das constatações.\n§93.3.1. Na hipótese de aprofundamento dos exames no trabalho em andamento, o relato e as propostas de encaminhamento deverão ser feitos em processo apartado.",
+  "NAT, §94": "Deve ser desenvolvido e documentado um plano para cada trabalho de auditoria, que evidenciará o objetivo, o escopo, o prazo e a alocação de recursos. Os auditores devem desenvolver programas de auditoria que alcancem os objetivos de auditoria e tais programas, e seus eventuais ajustes, devem ser registrados e aprovados antes do início da execução.",
+  "NAT, §95, II": "Considere, necessariamente, elementos de conhecimento prévio sobre o objeto auditado, seus sistemas mais importantes, seus objetivos e riscos e a eficácia de seus controles internos.",
+  "NAT, §95, III": "Explicite a natureza, a extensão e a profundidade dos exames a serem realizados e seja suficientemente detalhado de forma a não permitir equívocos na sua execução.",
+  "NAT, §96": "Limitações de escopo em função de restrições de acesso a registros oficiais ou de outras condições específicas necessárias para planejar e conduzir a auditoria devem ser registradas para declaração no relatório de como isso afetou ou pode ter afetado os resultados do trabalho.",
+  "NAT, §97": "O programa de auditoria deve evidenciar: I. o objetivo e o escopo da auditoria; II. o universo e a amostra a serem examinados; III. os procedimentos e as técnicas a serem utilizados, os critérios de auditoria, as informações requeridas e suas fontes, as etapas a serem cumpridas com respectivos cronogramas; IV. a quantificação dos recursos necessários à execução do trabalho.",
+  "NAT, §§99 e 103,III (Rev. 2011)": "§99. Achado de auditoria é qualquer fato significativo, digno de relato pelo auditor, constituído de quatro atributos essenciais: situação encontrada, critério, causa e efeito.\n§103, III. CAUSA: A causa é um importante aspecto dos achados, representando a origem da divergência que se observa entre a situação encontrada e o critério. Auditores devem se empenhar na busca da causa dos desvios que produzem resultados ou consequências adversos.",
+  "NAT, §§100.1 e 100.2": "§100.1. impropriedades: falhas de natureza formal de que não resulte dano ao erário e outras que têm o potencial para conduzir à inobservância aos princípios de administração pública, tais como deficiências no controle interno, violações de cláusulas, abuso, imprudência, imperícia.\n§100.2. irregularidades: prática de ato de gestão ilegal, ilegítimo, antieconômico, dano ao erário, desfalque ou desvio de dinheiros, bens ou valores públicos, tais como fraudes, atos ilegais, omissão no dever de prestar contas.",
+  "NAT, §100.1 e §100.2": "§100.1. impropriedades: falhas de natureza formal de que não resulte dano ao erário e outras que têm o potencial para conduzir à inobservância aos princípios de administração pública.\n§100.2. irregularidades: prática de ato de gestão ilegal, ilegítimo, antieconômico, dano ao erário, desfalque ou desvio, tais como fraudes, atos ilegais, omissão no dever de prestar contas.",
+  "NAT, §100.1": "Impropriedades: falhas de natureza formal de que não resulte dano ao erário e outras que têm o potencial para conduzir à inobservância aos princípios de administração pública ou à infração de normas legais e regulamentares, tais como deficiências no controle interno, violações de cláusulas, abuso, imprudência, imperícia.",
+  "NAT, §100.2": "Irregularidades: prática de ato de gestão ilegal, ilegítimo, antieconômico, ou infração à norma legal ou regulamentar de natureza contábil, financeira, orçamentária, operacional ou patrimonial, dano ao erário, desfalque ou desvio de dinheiros, bens ou valores públicos, tais como fraudes, atos ilegais, omissão no dever de prestar contas, violações aos princípios de administração pública.",
+  "NAT, §101": "O desenvolvimento dos achados é o processo mais importante de uma auditoria, pois são eles que fundamentam as conclusões e as propostas de encaminhamento que serão submetidas ao Tribunal e, posteriormente, comunicadas aos responsáveis e demais interessados.",
+  "NAT, §102": "Um achado de auditoria deve ser desenvolvido atendendo, necessariamente, aos seguintes requisitos básicos: I. ser relevante para os objetivos da auditoria; II. ser apresentado de forma objetiva e estar devidamente fundamentado em evidências; III. apresentar consistência de modo a mostrar-se convincente a quem não participou do trabalho.",
+  "NAT, §103, I e II": "I. SITUAÇÃO ENCONTRADA: situação existente, identificada e documentada durante a fase de execução da auditoria. Deve contemplar o período de ocorrência do achado.\nII. CRITÉRIO DE AUDITORIA: referencial que indica o estado requerido ou desejado ou a expectativa em relação a uma situação objeto de auditoria, reflete como deveria ser a gestão.",
+  "NAT, §103, IV": "EFEITOS REAIS E POTENCIAIS: identifica os resultados ou as consequências para a entidade, o erário ou para a sociedade, da discrepância entre a situação encontrada e o critério. Subdividem-se em: efeitos reais (aqueles efetivamente verificados) e efeitos potenciais/riscos (aqueles que podem ou não se concretizar). Efeito real ou efeito potencial podem ser usados para demonstrar a necessidade de ações corretivas.",
+  "NAT, §106": "Somente deverão ser reunidas evidências que sejam úteis e essenciais ao cumprimento dos objetivos da auditoria. Material que porventura não tenha utilidade ou conexão clara e direta com o trabalho realizado não deverá ser considerado.",
+  "NAT, §107": "As evidências testemunhais devem, sempre que possível, ser reduzidas a termo e corroboradas por outras evidências.",
+  "NAT, §108, I e II": "I. VALIDADE: a evidência deve ser legítima, ou seja, baseada em informações precisas e confiáveis.\nII. CONFIABILIDADE: garantia de que serão obtidos os mesmos resultados se a auditoria for repetida. Fontes externas são mais confiáveis que internas; evidências documentais são mais confiáveis que orais; evidências obtidas por observação direta ou análise são mais confiáveis que aquelas obtidas indiretamente.",
+  "NAT, §108, II": "CONFIABILIDADE: garantia de que serão obtidos os mesmos resultados se a auditoria for repetida. Fontes externas, em geral, são mais confiáveis que internas; evidências documentais são mais confiáveis que orais; evidências obtidas por observação direta ou análise são mais confiáveis que aquelas obtidas indiretamente.",
+  "NAT, §108, III": "RELEVÂNCIA: a evidência é relevante se for relacionada, de forma clara e lógica, aos critérios e objetivos da auditoria.",
+  "NAT, §108, III e IV": "III. RELEVÂNCIA: a evidência é relevante se for relacionada, de forma clara e lógica, aos critérios e objetivos da auditoria.\nIV. SUFICIÊNCIA: a quantidade e qualidade das evidências obtidas devem persuadir o leitor de que os achados estão bem fundamentados. A quantidade de evidências não substitui a falta dos outros atributos.",
+  "NAT, §108, IV": "SUFICIÊNCIA: a quantidade e qualidade das evidências obtidas devem persuadir o leitor de que os achados, as conclusões, as recomendações e as determinações da auditoria estão bem fundamentados. A quantidade de evidências não substitui a falta dos outros atributos (validade, confiabilidade, relevância). Quanto maior a materialidade do objeto, o risco e o grau de sensibilidade do auditado a determinado assunto, maior será a necessidade de evidências mais robustas.",
+  "NAT, §§105 e 108, IV": "§105. As evidências devem ser suficientes e completas de modo a permitir que terceiros cheguem às mesmas conclusões da equipe; adequadas e fidedignas; pertinentes ao tema e diretamente relacionadas com o achado.\n§108, IV. A quantidade de evidências não substitui a falta dos outros atributos (validade, confiabilidade, relevância).",
+  "NAT, §§107 e 108, II": "§107. As evidências testemunhais devem, sempre que possível, ser reduzidas a termo e corroboradas por outras evidências.\n§108, II. Evidências documentais são mais confiáveis que orais; evidências obtidas por observação direta ou análise são mais confiáveis que aquelas obtidas indiretamente.",
+  "NAT, §112": "Consideram-se papéis de trabalho aqueles preparados pelo auditor, pelo auditado ou por terceiros, tais como, planilhas, formulários, questionários preenchidos, fotografias, arquivos de dados, de vídeo ou de áudio, ofícios, memorandos, portarias, documentos originais ou cópias de contratos ou de termos de convênios, confirmações externas, programas de auditoria e registros de sua execução em qualquer meio, físico ou eletrônico.",
+  "NAT, §§112.1, 114 e 114.1 (Rev. 2020)": "§112.1. Os registros de reuniões ou entrevistas mediante gravações de áudio ou áudio/vídeo também são considerados papéis do trabalho realizado.\n§114. Os auditores devem manter a necessária cautela no manuseio de papéis de trabalho, especialmente com gravações, para evitar que pessoas não autorizadas venham a ter ciência do conteúdo.\n§114.1. Os interlocutores devem ser informados nos casos em que se pretenda fazer o registro das reuniões ou entrevistas mediante gravação.",
+  "NAT, §116.5": "Os papéis de trabalho devem ser revisados para assegurar que o trabalho foi desenvolvido conforme o planejado e as conclusões e os resultados estão de acordo com os registros.",
+  "NAT, §116.6": "A primeira revisão dos papéis de trabalho deve ser realizada pelo próprio auditor e deve ser a mais detalhada, para certificar-se de que suas conclusões se coadunam com suas apurações e registros e de que não existem erros que possam comprometer os resultados.",
+  "NAT, §116.7": "Revisões executadas por quem não elaborou o papel devem verificar se o trabalho foi desenvolvido conforme o planejado, se os registros estão adequados às conclusões e se não foram omitidos dados e informações imprescindíveis ou relevantes.",
+  "NAT, §116.8": "Ao final da auditoria, todos os papéis de trabalho obtidos devem ser classificados em transitórios ou permanentes.",
+  "NAT, §§116.8.1 e 116.8.2": "§116.8.1. Transitórios são aqueles necessários ao trabalho somente por um período limitado, para assegurar a execução de um procedimento ou a obtenção de outros papéis de trabalho subsequentes.\n§116.8.2. Todos os demais papéis de trabalho obtidos, não classificados como transitórios, são considerados como papéis de trabalho permanentes.",
+  "NAT, §§118 e 119": "§118. A responsabilidade dos auditores não é reduzida pela utilização de trabalhos de outros auditores.\n§119. Caso as constatações apontadas nos trabalhos de outros auditores sejam utilizadas, a equipe de auditoria assume integral responsabilidade pela veracidade dos fatos, devendo se assegurar de que compartilha das conclusões apresentadas.",
+  "NAT, §§120 e 122": "§120. A unidade técnica coordenadora do trabalho deverá avaliar a capacidade do especialista em realizar o trabalho e apresentar os resultados de forma imparcial, especialmente a sua competência profissional e independência.\n§122. A unidade técnica coordenadora do trabalho deve obter do especialista o seu compromisso de manutenção de confidencialidade.",
+  "NAT, §121": "As informações contidas em trabalhos realizados por especialistas, que não componham a equipe de auditoria, integrarão o relatório como evidências para os achados levantados pelos auditores.",
+  "NAT, §§120 e 121": "§120. A unidade técnica coordenadora deverá avaliar a capacidade do especialista em realizar o trabalho e apresentar os resultados de forma imparcial, especialmente a sua competência profissional e independência.\n§121. As informações contidas em trabalhos realizados por especialistas, que não componham a equipe de auditoria, integrarão o relatório como evidências para os achados.",
+  "NAT, §129, I": "CLAREZA: produzir textos de fácil compreensão. Evitar a erudição, o preciosismo, o jargão, a ambiguidade e restringir ao máximo a utilização de expressões em outros idiomas, exceto quando se tratar de expressões que não possuam tradução adequada para o idioma português e que já se tornaram corriqueiras.",
+  "NAT, §129, II": "CONVICÇÃO: expor os achados e as conclusões com firmeza, evitando palavras ou expressões que denotem insegurança, tais como \"SMJ\", \"supõe-se\", \"parece que\", \"há indícios\", \"talvez\", \"esta equipe de auditoria entende que...\", \"aparentemente\".",
+  "NAT, §129, III": "CONCISÃO: ir direto ao assunto, utilizando linguagem sucinta. O relatório não deve exceder trinta páginas, excluídos a folha de rosto, o resumo, o sumário, as listas de figuras e tabelas, os anexos e os documentos juntados, exceto quando houver achados de alta complexidade ou em grande quantidade, a critério do titular da unidade técnica coordenadora da auditoria.",
+  "NAT, §129, IV": "COMPLETUDE: apresentar toda a informação e todos os elementos necessários para satisfazer os objetivos da auditoria. Ser completo também significa determinar claramente o que devia e não foi feito, descrevendo explicitamente as limitações dos dados, as limitações impostas pelas restrições de acesso a registros e outras questões.",
+  "NAT, §129, V": "EXATIDÃO: apresentar as necessárias evidências para sustentar seus achados, conclusões e propostas. A exatidão é necessária para assegurar ao leitor que o que foi relatado é fidedigno e confiável. Um erro pode pôr em dúvida a validade de todo o relatório.",
+  "NAT, §129, VI": "RELEVÂNCIA: expor apenas aquilo que tem importância dentro do contexto e que deve ser levado em consideração em face dos objetivos da auditoria. Não se deve discorrer sobre fatos ou ocorrências que não contribuem para as conclusões e não resultem em propostas de encaminhamento.",
+  "NAT, §129, VII": "TEMPESTIVIDADE: emitir tempestivamente os relatórios de auditoria para que sejam mais úteis aos leitores destinatários. Auditores devem cumprir o prazo previsto para a elaboração do relatório, sem comprometer a qualidade.",
+  "NAT, §129, VIII": "OBJETIVIDADE: harmonizar o relatório em termos de conteúdo e tom. A credibilidade de um relatório é reforçada quando as evidências são apresentadas de forma imparcial. A comunicação deve ser justa e não enganosa, resguardando-se contra a tendência de exagerar ou superenfatizar deficiências. Não devem ser utilizados comentários entre aspas com sentido dúbio ou irônico.",
+  "NAT, §138": "Os achados de auditoria devem ser desenvolvidos com base nas orientações contidas no tópico desenvolvimento dos achados. Cada achado deve ser descrito com base nos seguintes aspectos: I. descrição/título; II. situação encontrada; III. objetos nos quais foi constatado; IV. critério de auditoria; V. evidências; VI. causas; VII. efeitos reais ou potenciais; VIII. responsável; IX. esclarecimentos dos responsáveis; X. conclusão da equipe; XI. proposta de encaminhamento.",
+  "NAT, §138 e §139": "§138. Cada achado deve ser descrito com base em: descrição, situação encontrada, objetos, critério, evidências, causas, efeitos, responsável, esclarecimentos, conclusão e proposta de encaminhamento.\n§139. Manuais, padrões e normas mais específicos podem restringir ou estabelecer que outros elementos sejam relatados na apresentação dos achados.",
+  "NAT, §140": "Para dar ao leitor uma base para avaliar a importância e as consequências de seus achados, os auditores devem, conforme aplicável, relatar as situações encontradas em termos da população ou do número de casos examinados e quantificar os resultados em termos de valor monetário ou de outras medidas. Se não puder mensurar, os auditores devem limitar adequadamente suas conclusões.",
+  "NAT, §141": "Em auditorias operacionais, os achados devem ser apresentados em ordem decrescente de relevância, isto é, inicia-se pelo tema que se revelou mais importante. Outra forma de organizar o texto é partir dos temas mais gerais para os mais específicos.",
+  "NAT, §142": "Caso a situação encontrada seja avaliada como irregularidade grave, que justifique a audiência para eventual aplicação de multa ou a conversão em tomada de contas especial, os responsáveis devem ser devidamente identificados em rol juntado ao processo. A avaliação de culpabilidade deve ser desenvolvida com base em matriz de responsabilização.",
+  "NAT, §143": "Os esclarecimentos dos responsáveis acerca dos achados preliminares de auditoria deverão ser incorporados nos relatórios como um dos aspectos de cada achado, individualmente, se o achado subsistir.",
+  "NAT, §145 e §145.2": "§145. Nas auditorias operacionais, a regra é submeter o relatório preliminar aos comentários dos gestores. Nas demais fiscalizações, a regra é que seja encaminhado ao gestor excerto do relatório preliminar.\n§145.2. Não é obrigatória a remessa preliminar das deliberações do tipo \"Ciência\" para comentários dos gestores.",
+  "NAT, §145.1": "As propostas de encaminhamento não devem ser incluídas no documento a ser comentado caso a sua divulgação coloque em risco os objetivos da auditoria.",
+  "NAT, §145.4": "Caso o relatório preliminar, ou excerto deste, não seja encaminhado para comentários dos gestores, os motivos que dispensaram ou levaram ao não atendimento do comando previsto no parágrafo 145 devem ser registrados no relatório.",
+  "NAT, §146": "O documento a ser submetido aos gestores deve ser antes revisado pelo supervisor e deve ser remetido por intermédio de ofício. O ofício deve informar que a obtenção desses comentários não representa abertura do contraditório e que a não apresentação dos comentários não impedirá o andamento normal do processo nem será considerada motivo de sanção.",
+  "NAT, §146.1": "O ofício de remessa deve solicitar aos gestores que encaminhem seus comentários contemplando a perspectiva dos dirigentes e as ações corretivas que pretendem tomar, bem como sobre as propostas de determinação e/ou recomendação formuladas, informando sobre as consequências práticas da implementação das medidas aventadas e eventuais alternativas.",
+  "NAT, §§147 e 148": "§147. Os comentários dos gestores devem, sempre que possível, ser incorporados, de forma resumida, no relato dos achados e serão analisados pela equipe juntamente com os demais fatos, devendo constar da análise a informação de que foram feitas alterações no relatório em razão dos comentários recebidos.\n§148. O documento encaminhado pelo gestor se constituirá em papel de trabalho da auditoria.",
+  "NAT, §148": "O documento encaminhado pelo gestor se constituirá em papel de trabalho da auditoria.",
+  "NAT, §§83.2 e 83.3": "§83.2. Previamente à elaboração do ofício de requisição, deve o coordenador da auditoria realizar reunião e/ou manter contato com gestor do órgão/entidade jurisdicionada.\n§83.3. Fica a critério do supervisor da fiscalização dispensar a reunião e/ou contato referidos no item anterior, nas hipóteses de notória impossibilidade ou de se configurar desaconselhável por razões de natureza técnica.",
+  "NAT, §§86.3 e 86.4": "§86.3. A apresentação dos achados na reunião de encerramento somente pode ser dispensada nos casos em que represente risco à equipe ou à consecução dos objetivos da auditoria.\n§86.4. Deve ser informado aos dirigentes e responsáveis da entidade auditada que os achados são preliminares, podendo ser corroborados ou excluídos em decorrência do aprofundamento da análise.",
+  "NAT, §§94 e 97": "§94. Deve ser desenvolvido e documentado um plano para cada trabalho de auditoria, que evidenciará o objetivo, o escopo, o prazo e a alocação de recursos.\n§97. O programa de auditoria deve evidenciar: I. o objetivo e o escopo; II. o universo e a amostra; III. os procedimentos, técnicas, critérios, informações e cronogramas; IV. a quantificação dos recursos necessários.",
+  "NAT, Bases Conceituais": "Auditoria é o processo sistemático, documentado e independente de se avaliar objetivamente uma situação ou condição para determinar a extensão na qual critérios são atendidos, obter evidências quanto a esse atendimento e relatar os resultados dessa avaliação a um destinatário predeterminado.",
+  "NAT, §156": "A conclusão constitui uma seção exclusiva do relatório, na qual se deve trazer resposta à questão fundamental da auditoria, constante do enunciado do seu objetivo. Além disso, devem-se abordar as respostas às questões formuladas para compor o escopo da auditoria.",
+  "NAT, §157": "A força das conclusões dos auditores depende da suficiência e da adequação das evidências que suportam os achados e da solidez da lógica utilizada para formulá-las. As conclusões são mais fortes quando levam a propostas de encaminhamento cujos usuários do relatório concordam com a necessidade das proposições.",
+  "NAT, §158": "As conclusões do relatório são afirmações da equipe, deduzidas dos achados. Para a formulação da conclusão, devem ser considerados os efeitos dos achados, obtidos pela avaliação da diferença entre situação encontrada e o resultado que teria sido observado caso se tivesse seguido o critério de auditoria.",
+  "NAT, §159": "A conclusão deve fazer menção expressa quanto à possibilidade, ou não, da generalização dos resultados obtidos na análise do conjunto de casos examinados para todo o universo ou população, conforme tenha sido calculado o tamanho do conjunto analisado, bem como realizada a seleção de seus elementos constituintes.",
+  "NAT, §159.1 e §159.2": "§159.1. Quando a seleção tiver ocorrido de forma probabilística, os resultados poderão ser generalizados, devendo-se consignar, no relatório, que as conclusões generalizadas necessariamente embutem um certo grau de incerteza inerente aos cálculos estatísticos.\n§159.2. Quando a seleção tiver ocorrido de forma não probabilística, não será possível a generalização dos resultados, pela impossibilidade de se fazer qualquer inferência estatística.",
+  "NAT, §160": "Em auditorias operacionais, as conclusões são inferências lógicas sobre a economicidade, eficiência, eficácia e efetividade de organizações, programas ou atividades governamentais. A conclusão não é apenas um resumo dos achados, devendo-se destacar, de forma equilibrada, os pontos fortes do objeto de auditoria, as principais oportunidades de melhoria e os possíveis benefícios esperados. Devem ser relatadas as dificuldades enfrentadas pelos gestores e destacadas as iniciativas positivas por eles empreendidas.",
+  "NAT, §161": "Na conclusão deve ser relatado o benefício total estimado ou esperado das propostas de encaminhamento e podem ser feitas considerações sobre o trabalho realizado, breves relatos de não detecção de irregularidades ou impropriedades na abordagem de questões de auditoria.",
+  "NAT, §163": "As propostas de deliberação devem ser consistentes com os achados, decorrendo logicamente destes e das conclusões e focando nas causas identificadas. As propostas deverão indicar, entre parênteses, os números dos parágrafos ou itens nos quais os achados a que se referem foram apresentados no relatório.",
+  "NAT, §164": "São variados os tipos de proposta que podem ser encaminhadas pelas equipes de auditoria, dado que as competências do Tribunal permitem-lhe não só a realização de auditorias e inspeções, mas também julgar e aplicar sanções. Assim, na proposta de encaminhamento, podem ser formuladas proposições de recomendações, determinações, medidas saneadoras, medidas cautelares, dentre outras previstas legal ou regimentalmente.",
+  "NAT, §165": "As propostas de determinação e de recomendação devem ser formuladas focando \"o quê\" deve ser aperfeiçoado ou corrigido e não \"o como\", dado à discricionariedade que cabe ao gestor e ao fato de que a equipe de auditoria não detém a única ou a melhor solução para o problema identificado.",
+  "NAT, §166": "A formulação de determinações pelos auditores deve ser precedida de avaliação quanto ao atendimento dos requisitos indispensáveis para a sua proposição, conforme estabelecido em norma específica do Tribunal.",
+  "NAT, §§163 e 166": "§163. As propostas de deliberação devem ser consistentes com os achados, decorrendo logicamente destes e das conclusões e focando nas causas identificadas.\n§166. A formulação de determinações pelos auditores deve ser precedida de avaliação quanto ao atendimento dos requisitos indispensáveis para a sua proposição, conforme estabelecido em norma específica do Tribunal."
+};
+
+let matMap = {}; // {materia: [normaName,...]}
+function getMaterias(){
+  // Build from stored matMap + defaults
+  const nm = normas();
+  const normaNames = Object.keys(nm);
+  // Default: put all normas in "Geral" if not mapped
+  const result = JSON.parse(JSON.stringify(matMap));
+  normaNames.forEach(n=>{
+    let found = false;
+    Object.keys(result).forEach(m=>{ if(result[m].includes(n)) found=true; });
+    if(!found){
+      if(!result["Geral"]) result["Geral"]=[];
+      result["Geral"].push(n);
+    }
+  });
+  return result;
+}
+
+function capitulos(normaName){
+  const caps={};
+  allQ().filter(q=>q.norma===normaName).forEach(q=>{
+    const key = chapShort(q.capitulo);
+    if(!caps[key]) caps[key]=[];
+    caps[key].push(q);
+  });
+  return caps;
+}
+
+function markdownToHtml(text){
+  // Convert *text* to <strong>text</strong>
+  return (text||'').replace(/\*([^*]+)\*/g, '<strong>$1</strong>');
+}
+function chapShort(cap){
+  const m = cap.match(/^(Capítulo \d+)/);
+  return m ? m[1] : cap;
+}
+function secaoShort(cap){
+  // "Capítulo 3 — §§73-77: Supervisão e Revisão" → "Supervisão e Revisão"
+  // "Capítulo 1 — Preceitos Básicos"             → "Preceitos Básicos"
+  const colon = cap.indexOf(': ');
+  if(colon !== -1) return cap.substring(colon + 2);
+  const dash = cap.indexOf(' — ');
+  if(dash !== -1) return cap.substring(dash + 3);
+  return cap;
+}
+
+function qPool(){
+  let qs = allQ();
+  if(st.qNorma) qs = qs.filter(q=>q.norma===st.qNorma);
+  if(st.qCap && st.qCap!=="all") qs = qs.filter(q=>chapShort(q.capitulo)===st.qCap);
+  if(st.qFilter==="wrong") qs = qs.filter(q=>st.answers[q.id]!==undefined&&st.answers[q.id]!==q.answer);
+  if(st.qFilter==="unanswered") qs = qs.filter(q=>st.answers[q.id]===undefined);
+  if(st.qFilter==="flagged") qs = qs.filter(q=>st.flags[q.id]);
+  if(st.qSearch.trim()){
+    const s=st.qSearch.toLowerCase();
+    qs = qs.filter(q=>q.statement.toLowerCase().includes(s)||q.ref.toLowerCase().includes(s));
+  }
+  return qs;
+}
+
+/* ══════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════ */
+function navTo(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const navEl = document.getElementById('nav-'+page);
+  if(navEl) navEl.classList.add('active');
+  st.page = page;
+  if(page==='inicio') renderHome();
+  if(page==='favoritas') renderFavoritas();
+  if(page==='analise') renderAnalise();
+  if(page==='anotacoes') renderAnotacoes();
+  if(page==='artigo') renderArtigo();
+  // close sidebar on mobile
+  if(window.innerWidth<=768) toggleSidebar(false);
+}
+
+function toggleSidebar(force){
+  const sb = document.getElementById('sidebar');
+  const bd = document.getElementById('sb-backdrop');
+  if(force===false){
+    sb.classList.remove('open');
+    bd.classList.remove('show');
+  } else {
+    sb.classList.toggle('open');
+    bd.classList.toggle('show');
+  }
+}
+
+/* ══════════════════════════════════════════
+   HOME
+══════════════════════════════════════════ */
+function renderHome(){
+  renderSidebar();
+  const nm = normas();
+  const mats = getMaterias();
+  const matNames = Object.keys(mats);
+  
+  let html = '';
+  matNames.forEach(mat=>{
+    const normaNames = (mats[mat]||[]).filter(n=>nm[n]);
+    if(!normaNames.length && matNames.length>1) return;
+    html += `<div class="materia-card">
+      <div class="materia-head" onclick="toggleMateria('hm-${esc(mat)}')">
+        <div class="materia-head-left">
+          <span class="materia-chevron open" id="hm-chev-${esc(mat)}">›</span>
+          <span class="materia-name">${mat}</span>
+        </div>
+      </div>
+      <div class="materia-body" id="hm-${esc(mat)}">`;
+    normaNames.forEach(normaName=>{
+      const caps = capitulos(normaName);
+      const total = (nm[normaName]||[]).length;
+      html += `<div class="assunto-card">
+        <div class="assunto-head" onclick="toggleAssunto('ha-${esc(normaName)}','hachev-${esc(normaName)}')">
+          <span class="assunto-name">${normaName}</span>
+          <span class="assunto-count" onclick="event.stopPropagation();openQuestoes('${esc(normaName)}','all')">${total} questões</span>
+        </div>
+        <div class="capitulo-list" id="ha-${esc(normaName)}" style="display:block">`;
+      Object.entries(caps).forEach(([cap,qs])=>{
+        html += `<div class="capitulo-row">
+          <span class="capitulo-name">${cap}</span>
+          <span class="capitulo-count" onclick="openQuestoes('${esc(normaName)}','${esc(cap)}')">${qs.length} questões</span>
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+    html += `<button class="add-assunto-btn" onclick="promptAddNorma('${esc(mat)}')">+ adicionar assunto</button>`;
+    html += `</div></div>`;
+  });
+  html += `<div class="add-materia-card" onclick="promptAddMateria()">+ Adicionar matéria</div>`;
+  document.getElementById('home-materias').innerHTML = html;
+}
+
+function toggleMateria(id){
+  const el = document.getElementById(id);
+  const chev = document.getElementById('hm-chev-'+id.replace('hm-',''));
+  if(!el) return;
+  const open = el.style.display!=='none';
+  el.style.display = open?'none':'block';
+  if(chev) chev.classList.toggle('open',!open);
+}
+function toggleAssunto(id,chevId){
+  const el=document.getElementById(id);
+  const chev=document.getElementById(chevId);
+  if(!el) return;
+  const open=el.style.display!=='none';
+  el.style.display=open?'none':'block';
+  if(chev) chev.classList.toggle('open',!open);
+}
+
+let _addAssuntoMat = null;
+function promptAddMateria(){
+  document.getElementById('add-materia-input').value='';
+  document.getElementById('modal-add-materia').classList.add('open');
+  setTimeout(()=>document.getElementById('add-materia-input').focus(),100);
+}
+function confirmAddMateria(){
+  const name = document.getElementById('add-materia-input').value.trim();
+  if(!name) return;
+  matMap[name]=[];
+  save();
+  closeModal('modal-add-materia');
+  renderHome();
+  renderSidebar();
+}
+function promptAddNorma(mat){
+  _addAssuntoMat = mat;
+  document.getElementById('add-assunto-materia-label').textContent = 'Assunto em: '+mat;
+  document.getElementById('add-assunto-input').value='';
+  document.getElementById('modal-add-assunto').classList.add('open');
+  setTimeout(()=>document.getElementById('add-assunto-input').focus(),100);
+}
+function confirmAddAssunto(){
+  const name = document.getElementById('add-assunto-input').value.trim();
+  if(!name||!_addAssuntoMat) return;
+  if(!matMap[_addAssuntoMat]) matMap[_addAssuntoMat]=[];
+  if(!matMap[_addAssuntoMat].includes(name)) matMap[_addAssuntoMat].push(name);
+  save();
+  closeModal('modal-add-assunto');
+  renderHome();
+  renderSidebar();
+}
+
+/* ══════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════ */
+function renderSidebar(){
+  const nm = normas();
+  const mats = getMaterias();
+  let html = '';
+  Object.entries(mats).forEach(([mat,normaNames])=>{
+    html += `<div class="sb-materia">
+      <div class="sb-materia-name">${mat}</div>`;
+    (normaNames||[]).filter(n=>nm[n]).forEach(n=>{
+      html += `<div class="sb-norma${st.qNorma===n?' active':''}" onclick="openQuestoes('${esc(n)}','all')">${n}</div>`;
+    });
+    html += `<div class="sb-add-assunto" onclick="promptAddNorma('${esc(mat)}')">+ adicionar assunto</div>`;
+    html += `</div>`;
+  });
+  html += `<div class="sb-add-materia" onclick="promptAddMateria()">+ ADICIONAR MATÉRIA</div>`;
+  document.getElementById('sb-materias').innerHTML = html;
+}
+
+/* ══════════════════════════════════════════
+   QUESTÕES — one by one
+══════════════════════════════════════════ */
+function openQuestoes(normaName, cap){
+  st.qNorma = normaName;
+  st.qCap = cap||"all";
+  st.qIdx = 0;
+  st.qFilter = "all";
+  st.qSearch = "";
+  st._pendingDel = null;
+  navTo('questoes');
+  renderQuestoes();
+}
+
+function renderQuestoes(){
+  const pool = qPool();
+  // Title + breadcrumb
+  document.getElementById('q-page-title').textContent = 'Questões';
+  // Find matéria for this norma
+  const matsAll = getMaterias();
+  let materiaLabel = '';
+  Object.entries(matsAll).forEach(([mat,normaArr])=>{ if((normaArr||[]).includes(st.qNorma)) materiaLabel=mat; });
+  const breadcrumbParts = [
+    materiaLabel ? materiaLabel.toUpperCase() : null,
+    st.qNorma ? st.qNorma.toUpperCase() : null,
+  ].filter(Boolean);
+  document.getElementById('q-breadcrumb').textContent = breadcrumbParts.join(' · ') || 'TODAS AS QUESTÕES';
+
+  // Filters — collapsible caps row + status inside when open
+  const caps = st.qNorma ? Object.keys(capitulos(st.qNorma)) : [];
+  const activeCap = st.qCap==='all' ? 'Todas' : st.qCap;
+  const capBtns = caps.map(cp=>`<button class="q-filter-btn${st.qCap===cp?' active':''}" onclick="setQCapFilter('${esc(cp)}')">${cp}</button>`).join('');
+
+  const baseQs = (st.qNorma ? allQ().filter(q=>q.norma===st.qNorma) : allQ()).filter(q=>!st.deleted[q.id]);
+  const capQs = st.qCap==='all' ? baseQs : baseQs.filter(q=>chapShort(q.capitulo)===st.qCap);
+  const unansweredCount = capQs.filter(q=>st.answers[q.id]===undefined).length;
+  const wrongCount = capQs.filter(q=>st.answers[q.id]!==undefined&&st.answers[q.id]!==q.answer).length;
+  const favCount = capQs.filter(q=>st.flags[q.id]).length;
+
+  const statusRow = st._filterOpen ? `<div class="q-filter-row-status">
+    <button class="q-filter-btn status-btn${st.qFilter==='all'?' active':''}" onclick="setQFilter('all')">Todas · ${capQs.length}</button>
+    <button class="q-filter-btn status-btn${st.qFilter==='unanswered'?' active':''}" onclick="setQFilter('unanswered')">Não respondidas${unansweredCount>0?' · '+unansweredCount:''}</button>
+    <button class="q-filter-btn status-btn wrong-active${st.qFilter==='wrong'?' active':''}" onclick="setQFilter('wrong')">Erradas${wrongCount>0?' · '+wrongCount:''}</button>
+    <button class="q-filter-btn status-btn fav-active${st.qFilter==='flagged'?' active':''}" onclick="setQFilter('flagged')">⭐ Favoritas${favCount>0?' · '+favCount:''}</button>
+  </div>` : '';
+
+  document.getElementById('q-filter-bar').innerHTML =
+    `<div class="q-filter-row-caps">`+
+      `<button class="q-filter-btn${st.qCap==='all'&&st.qFilter==='all'?' active':''}" onclick="toggleFilterCap('all')">Todas</button>`+
+      caps.map(cp=>`<button class="q-filter-btn${st.qCap===cp?' active':''}" onclick="toggleFilterCap('${esc(cp)}')">${cp}</button>`).join('')+
+    `</div>`+
+    statusRow;
+
+  if(!pool.length){
+    document.getElementById('q-card-wrap').innerHTML = `<div style="text-align:center;padding:3rem;color:var(--gray-400);font-size:14px"><div style="font-size:40px;margin-bottom:.75rem">🎉</div>Nenhuma questão nesta seleção.</div>`;
+    document.getElementById('q-nav').innerHTML='';
+    document.getElementById('q-prog-fill').style.width='0%';
+    return;
+  }
+
+  if(st.qIdx >= pool.length) st.qIdx = pool.length-1;
+  if(st.qIdx < 0) st.qIdx = 0;
+  const q = pool[st.qIdx];
+  const ua = st.answers[q.id];
+  const answered = ua !== undefined;
+  const correct = answered && ua===q.answer;
+  const wrong = answered && ua!==q.answer;
+  const flagged = !!st.flags[q.id];
+  const note = st.notes[q.id]||'';
+  const hist = st.history[q.id]||[];
+
+  // Progress
+  const answeredCount = pool.filter(x=>st.answers[x.id]!==undefined).length;
+  // Progress bar with 3 segments
+  const totalInPool = pool.length;
+  const nCorrect = pool.filter(x=>st.answers[x.id]===x.answer).length;
+  const nWrong = pool.filter(x=>st.answers[x.id]!==undefined&&st.answers[x.id]!==x.answer).length;
+  const nCurrent = totalInPool>0 ? 1/totalInPool*100 : 0;
+  const pCorrect = totalInPool>0 ? nCorrect/totalInPool*100 : 0;
+  const pWrong = totalInPool>0 ? nWrong/totalInPool*100 : 0;
+  const pRest = totalInPool>0 ? Math.max(0, (st.qIdx+1)/totalInPool*100 - pCorrect - pWrong) : 0;
+  const progC = document.getElementById('q-prog-correct');
+  const progW = document.getElementById('q-prog-wrong');
+  const progR = document.getElementById('q-prog-rest');
+  if(progC) progC.style.width = pCorrect+'%';
+  if(progW) progW.style.width = pWrong+'%';
+  if(progR) progR.style.width = pRest+'%';
+  const statsEl = document.getElementById('q-prog-stats');
+  if(statsEl) statsEl.innerHTML = totalInPool>0 ? `
+    <span class="q-prog-stat"><span class="q-prog-dot" style="background:#4ADE80"></span>${nCorrect} certa${nCorrect!==1?'s':''}</span>
+    <span class="q-prog-stat"><span class="q-prog-dot" style="background:#F87171"></span>${nWrong} errada${nWrong!==1?'s':''}</span>
+    <span class="q-prog-stat" style="margin-left:auto">${st.qIdx+1} / ${totalInPool}</span>` : '';
+
+  // Card — answer options hidden until RESPONDER clicked
+  // st.revealed tracks if user clicked RESPONDER for current question
+  const revealed = !!st.revealed[q.id];
+
+  // Before reveal: show selected option highlighted but no correct/wrong color
+  const optC_cls = !answered ? 'q-opt'
+    : !revealed ? (ua==='CERTO' ? 'q-opt q-opt-selected' : 'q-opt')
+    : (q.answer==='CERTO' ? 'q-opt reveal-c' : (ua==='CERTO' ? 'q-opt selected-w' : 'q-opt'));
+  const optE_cls = !answered ? 'q-opt'
+    : !revealed ? (ua==='ERRADO' ? 'q-opt q-opt-selected' : 'q-opt')
+    : (q.answer==='ERRADO' ? 'q-opt reveal-c' : (ua==='ERRADO' ? 'q-opt selected-w' : 'q-opt'));
+
+  const histHint = hist.length>0 ? `<span style="font-size:11px;color:var(--gray-400);background:var(--violet-100);padding:2px 8px;border-radius:20px">${hist.length}ª vez · ${hist.filter(h=>h.correct).length}/${hist.length} certas</span>` : '';
+  const pendingDel = st._pendingDel===q.id;
+
+  // Find matéria name for this question's norma
+  const mats = getMaterias();
+  let materiaName = '';
+  Object.entries(mats).forEach(([mat,normas])=>{ if((normas||[]).includes(q.norma)) materiaName=mat; });
+
+  let expHtml = '';
+  if(answered && revealed){
+    const banner = correct
+      ? '<div class="q-result-banner correct"><span class="q-result-icon">✅</span> ACERTOU!!</div>'
+      : '<div class="q-result-banner wrong"><span class="q-result-icon">❌</span> ERROU!!</div>';
+    const fundText = '<div class="q-exp-box"><div class="q-exp-box-label">Fundamentação</div>'
+      + '<div class="q-exp-box-body">' + markdownToHtml(q.explanation)
+      + '<div class="trap-box" style="margin-top:.75rem"><span class="trap-icon">⚡</span>'
+      + '<div class="trap-content"><span class="trap-label">Pegadinha</span>'
+      + markdownToHtml(q.trap) + '</div></div></div></div>';
+    const noteBox = note
+      ? '<div class="q-exp-box note-box"><div class="q-exp-box-label">Anotação</div><div class="q-exp-box-body">' + note + '</div></div>'
+      : '';
+    expHtml = banner + fundText + noteBox;
+  }
+
+  const expOuter = expHtml;
+  document.getElementById('q-card-wrap').innerHTML = `
+    <div class="q-card">
+      
+      <div class="q-meta">
+        <span class="q-tag">${q.norma}</span>
+        <span class="q-tag-sep">|</span>
+        <span class="q-tag">${chapShort(q.capitulo)}</span>
+        ${histHint}
+        <div class="q-actions-right">
+          ${pendingDel
+            ? `<span class="confirm-del"><button class="btn-confirm" onclick="confirmDel('${q.id}')">Confirmar</button><button class="btn-cancel-del" onclick="cancelDel()">Cancelar</button></span>`
+            : `<button class="q-icon-btn" onclick="toggleFlag('${q.id}')" title="${flagged?'Remover favorito':'Favoritar'}">${flagged?'⭐':'☆'}</button>
+               <button class="q-icon-btn" onclick="openNoteModal('${q.id}')" title="Inserir anotação" style="font-size:16px">✏️</button>
+               <span style="display:inline-block;width:20px"></span>
+               <button class="q-icon-btn" onclick="requestDel('${q.id}')" title="Ocultar questão" style="font-size:16px;color:var(--gray-300)">🗑</button>`
+          }
+        </div>
+      </div>
+      <div class="q-statement">${q.statement}</div>
+      <div class="q-options">
+        <button class="${optC_cls}" ${answered?'disabled':''} onclick="answerQ('${q.id}','CERTO')">CERTO</button>
+        <button class="${optE_cls}" ${answered?'disabled':''} onclick="answerQ('${q.id}','ERRADO')">ERRADO</button>
+      </div>
+      <div class="q-responder">
+        <button class="btn-responder" ${!(answered&&!revealed)?'disabled':''} onclick="revealQ('${q.id}')">RESPONDER</button>
+      </div>
+      ${expHtml}
+    </div>`;
+
+  // Nav
+  const hasPrev = st.qIdx>0;
+  const hasNext = st.qIdx<pool.length-1;
+  document.getElementById('q-nav').innerHTML =
+    `<button class="btn-prev" ${hasPrev?'':'disabled style="opacity:.4;cursor:not-allowed"'} onclick="qNavPrev()">QUESTÃO ANTERIOR</button>`+
+    `<button class="btn-next" ${hasNext?'':'disabled style="opacity:.65;cursor:not-allowed"'} onclick="qNavNext()">PRÓXIMA QUESTÃO</button>`+
+    `<span class="q-counter">${st.qIdx+1} / ${pool.length}</span>`;
+}
+
+function revealQ(id){
+  st.revealed[id]=true;
+  renderQuestoes();
+}
+function openNoteModal(id){
+  st._noteId = id;
+  const modal = document.getElementById('modal-note');
+  const editor = document.getElementById('note-editor');
+  editor.innerHTML = st.notes[id]||'';
+  modal.classList.add('open');
+  setTimeout(()=>editor.focus(),100);
+}
+function closeNoteModal(){
+  document.getElementById('modal-note').classList.remove('open');
+}
+function closeNoteModalOutside(e){
+  if(e.target===document.getElementById('modal-note')) closeNoteModal();
+}
+function saveNoteModal(){
+  const editor = document.getElementById('note-editor');
+  const html = editor.innerHTML.trim();
+  if(html && html!=='<br>') st.notes[st._noteId]=html;
+  else delete st.notes[st._noteId];
+  save();
+  closeNoteModal();
+  renderQuestoes();
+}
+function noteCmd(cmd, val){
+  document.getElementById('note-editor').focus();
+  document.execCommand(cmd, false, val||null);
+}
+function insertTag(label, cls){
+  document.getElementById('note-editor').focus();
+  document.execCommand('insertHTML', false, `<span class="tag-${cls}">${label}</span>&nbsp;`);
+}
+function answerQ(id, val){
+  if(st.answers[id]!==undefined) return;
+  st.answers[id]=val;
+  const q=allQ().find(x=>x.id===id);
+  if(q){
+    if(!st.history[id]) st.history[id]=[];
+    st.history[id].push({answer:val,correct:val===q.answer,ts:Date.now()});
+  }
+  save(); renderQuestoes();
+}
+function revealNext(){ qNavNext(); }
+function qNavPrev(){
+  st.qIdx--;
+  st._pendingDel=null;
+  renderQuestoes();
+  requestAnimationFrame(()=>{
+    const card=document.querySelector('.q-card');
+    if(card){card.style.animation='none';void card.offsetWidth;card.classList.add('entering');}
+  });
+}
+function qNavNext(){
+  st.qIdx++;
+  st._pendingDel=null;
+  renderQuestoes();
+  requestAnimationFrame(()=>{
+    const card=document.querySelector('.q-card');
+    if(card){card.style.animation='none';void card.offsetWidth;card.classList.add('entering');}
+  });
+}
+function setQFilter(f){
+  st.qFilter=f;
+  // Do NOT reset qCap — status filter applies within current chapter selection
+  st.qIdx=0;
+  renderQuestoes();
+}
+function setQCapFilter(cap){
+  st.qCap=cap;
+  st.qFilter='all';
+  st.qIdx=0;
+  renderQuestoes();
+}
+function toggleFilterCap(cap){
+  if(st.qCap===cap){
+    // same cap clicked — toggle open/close
+    st._filterOpen=!st._filterOpen;
+  } else {
+    // different cap — select it and open
+    st.qCap=cap;
+    st.qFilter='all';
+    st.qIdx=0;
+    st._filterOpen=true;
+  }
+  renderQuestoes();
+}
+
+function toggleFlag(id){ if(st.flags[id]) delete st.flags[id]; else st.flags[id]=true; save(); renderQuestoes(); }
+function requestDel(id){ st._pendingDel=id; renderQuestoes(); setTimeout(()=>{if(st._pendingDel===id){st._pendingDel=null;renderQuestoes();}},4000); }
+function confirmDel(id){ st.deleted[id]=true; delete st.answers[id]; st._pendingDel=null; save(); renderQuestoes(); }
+function cancelDel(){ st._pendingDel=null; renderQuestoes(); }
+function saveNote(id){ const ta=document.getElementById('note-ta-'+id); if(ta&&ta.value.trim()) st.notes[id]=ta.value.trim(); save(); renderQuestoes(); }
+function editNote(id){ delete st.notes[id]; save(); renderQuestoes(); setTimeout(()=>{const ta=document.getElementById('note-ta-'+id);if(ta)ta.focus();},50); }
+
+/* ══════════════════════════════════════════
+   QUESTÕES FAVORITAS
+══════════════════════════════════════════ */
+function renderFavoritas(){
+  const nm = normas();
+  const mats = getMaterias();
+  let html = '';
+  let anyFav = false;
+
+  Object.entries(mats).forEach(([mat,normaNames])=>{
+    const matNormas = (normaNames||[]).filter(n=>nm[n]);
+    let matHtml = '';
+    matNormas.forEach(normaName=>{
+      const favQs = allQ().filter(q=>q.norma===normaName&&st.flags[q.id]);
+      if(!favQs.length) return;
+      anyFav = true;
+      matHtml += `<div class="fav-materia-card">
+        <div class="fav-materia-head" onclick="toggleMateria('fav-${esc(normaName)}')">
+          <span class="fav-materia-name">${normaName}</span>
+          <span class="fav-count">${favQs.length} questão${favQs.length!==1?'ões':' favorita'} favorita${favQs.length!==1?'s':''}</span>
+        </div>
+        <div class="fav-body" id="fav-${esc(normaName)}">`;
+      favQs.forEach(q=>{
+        matHtml += `<div class="fav-q-card">
+          <div class="fav-q-meta">
+            <span class="fav-q-cap">${chapShort(q.capitulo)}</span>
+            <button class="fav-icon-btn" onclick="toggleFlag('${q.id}')" title="Remover favorito">⭐</button>
+            <button class="fav-icon-btn" onclick="openQuestaoById('${q.id}')" title="Ver questão">✏️</button>
+          </div>
+          <div class="fav-q-text">${q.statement.substring(0,180)}${q.statement.length>180?'...':''}</div>
+        </div>`;
+      });
+      matHtml += `</div></div>`;
+    });
+    if(matHtml){
+      html += `<div style="margin-bottom:1.25rem">
+        <div class="page-subtitle">${mat}</div>
+        ${matHtml}
+      </div>`;
+    }
+  });
+  if(!anyFav) html = `<div class="fav-empty"><div class="fav-empty-icon">⭐</div>Nenhuma questão favorita ainda.<br><span style="font-size:12px">Clique na estrela ☆ em qualquer questão para favoritar.</span></div>`;
+  document.getElementById('fav-materias').innerHTML = html;
+}
+
+function openQuestaoById(id){
+  const q = allQ().find(x=>x.id===id);
+  if(!q) return;
+  st.qNorma = q.norma;
+  st.qCap = "all";
+  st.qFilter = "all";
+  st.qSearch = "";
+  const pool = allQ().filter(x=>x.norma===q.norma);
+  st.qIdx = pool.findIndex(x=>x.id===id);
+  if(st.qIdx<0) st.qIdx=0;
+  navTo('questoes');
+  renderQuestoes();
+}
+
+/* ══════════════════════════════════════════
+   ANÁLISE INDIVIDUALIZADA
+══════════════════════════════════════════ */
+function renderAnalise(){
+  const qs = allQ();
+  const total = qs.length;
+  const answered = qs.filter(q=>st.answers[q.id]!==undefined).length;
+  const correct = qs.filter(q=>st.answers[q.id]===q.answer).length;
+  const wrong = answered - correct;
+  const pct = answered>0 ? Math.round(correct/answered*100) : 0;
+
+  if(!answered){
+    document.getElementById('analise-content').innerHTML =
+      `<div class="analise-empty"><div class="analise-empty-icon">📊</div>Responda questões para ver sua análise de desempenho.</div>`;
+    return;
+  }
+
+  // Per norma stats
+  const nm = normas();
+  const normaStats = Object.entries(nm).map(([name,qs])=>{
+    const ans = qs.filter(q=>st.answers[q.id]!==undefined);
+    const cor = ans.filter(q=>st.answers[q.id]===q.answer);
+    const p = ans.length>0?Math.round(cor.length/ans.length*100):0;
+    const col = p>=70?'#16A34A':p>=50?'#D97706':'#DC2626';
+    return {name,total:qs.length,answered:ans.length,correct:cor.length,pct:p,col};
+  });
+
+  // Per capitulo stats
+  const capStats = [];
+  Object.entries(nm).forEach(([normaName,qs])=>{
+    const caps = {};
+    qs.forEach(q=>{ const k=chapShort(q.capitulo); if(!caps[k])caps[k]=[]; caps[k].push(q); });
+    Object.entries(caps).forEach(([cap,cqs])=>{
+      const ans=cqs.filter(q=>st.answers[q.id]!==undefined);
+      const cor=ans.filter(q=>st.answers[q.id]===q.answer);
+      const p=ans.length>0?Math.round(cor.length/ans.length*100):0;
+      const col=p>=70?'#16A34A':p>=50?'#D97706':'#DC2626';
+      capStats.push({name:`${normaName} · ${cap}`,answered:ans.length,correct:cor.length,pct:p,col});
+    });
+  });
+
+  const pctCol = pct>=70?'var(--green-600)':pct>=50?'var(--amber-600)':'var(--red-600)';
+
+  document.getElementById('analise-content').innerHTML =
+    `<div class="analise-grid">
+      <div class="analise-stat-card"><div class="analise-stat-label">Aproveitamento</div><div class="analise-stat-val" style="color:${pctCol}">${pct}%</div><div class="analise-stat-sub">${correct} certas de ${answered}</div></div>
+      <div class="analise-stat-card"><div class="analise-stat-label">Respondidas</div><div class="analise-stat-val">${answered}</div><div class="analise-stat-sub">de ${total} disponíveis</div></div>
+      <div class="analise-stat-card"><div class="analise-stat-label">Erradas</div><div class="analise-stat-val" style="color:var(--red-600)">${wrong}</div><div class="analise-stat-sub">${total-answered} não respondidas</div></div>
+    </div>
+    <div class="analise-bar-card">
+      <div class="analise-section-title">Por norma</div>
+      ${normaStats.filter(s=>s.answered>0).map(s=>`
+        <div class="analise-bar-row">
+          <span class="analise-bar-label" title="${s.name}">${s.name.length>18?s.name.substring(0,16)+'…':s.name}</span>
+          <div class="analise-bar-track"><div class="analise-bar-fill" style="width:${s.pct}%;background:${s.col}"></div></div>
+          <span class="analise-bar-pct" style="color:${s.col}">${s.pct}%</span>
+        </div>`).join('')}
+    </div>
+    <div class="analise-bar-card">
+      <div class="analise-section-title">Por capítulo</div>
+      ${capStats.filter(s=>s.answered>0).map(s=>`
+        <div class="analise-bar-row">
+          <span class="analise-bar-label" title="${s.name}">${s.name.length>22?s.name.substring(0,20)+'…':s.name}</span>
+          <div class="analise-bar-track"><div class="analise-bar-fill" style="width:${s.pct}%;background:${s.col}"></div></div>
+          <span class="analise-bar-pct" style="color:${s.col}">${s.pct}%</span>
+        </div>`).join('')}
+    </div>`;
+}
+
+/* ══════════════════════════════════════════
+   ANOTAÇÕES
+══════════════════════════════════════════ */
+function renderAnotacoes(){
+  const qs = allQ().filter(q=>st.notes[q.id]);
+  if(!qs.length){
+    document.getElementById('notas-content').innerHTML =
+      `<div class="notas-empty"><div class="notas-empty-icon">✏️</div>Nenhuma anotação ainda.<br><span style="font-size:12px">Adicione anotações nas questões respondidas.</span></div>`;
+    return;
+  }
+  document.getElementById('notas-content').innerHTML = qs.map(q=>`
+    <div class="nota-card" onclick="openQuestaoById('${q.id}')">
+      <div class="nota-meta">
+        <span class="nota-cap">${chapShort(q.capitulo)}</span>
+        <span class="nota-sep">·</span>
+        <span class="nota-norma">${q.norma}</span>
+        <span class="nota-sep">·</span>
+        <span class="nota-norma">${q.ref}</span>
+      </div>
+      <div class="nota-stmt">${q.statement.substring(0,100)}${q.statement.length>100?'...':''}</div>
+      <div class="nota-text">📝 ${st.notes[q.id]}</div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════════
+   ARTIGO POR ARTIGO
+══════════════════════════════════════════ */
+let artigoTopicos = []; // [{norma,capitulo,topico,paragrafos:[{ref,texto}]}]
+
+function renderArtigo(){
+  // Populate matéria selector
+  const mats = getMaterias();
+  const nm = normas();
+  const matNames = Object.keys(mats).filter(m=>(mats[m]||[]).some(n=>nm[n]));
+  const sel = document.getElementById('artigo-mat-sel');
+  const prev = sel.value;
+  sel.innerHTML = matNames.map(m=>`<option value="${m}"${m===prev?' selected':''}>${m}</option>`).join('');
+  if(!st.artigoMat||!matNames.includes(st.artigoMat)) st.artigoMat=matNames[0]||null;
+  sel.value=st.artigoMat||'';
+  renderArtigoAssuntos();
+}
+
+function renderArtigoAssuntos(){
+  st.artigoMat = document.getElementById('artigo-mat-sel').value;
+  const mats = getMaterias();
+  const nm = normas();
+  const assuntos = (mats[st.artigoMat]||[]).filter(n=>nm[n]);
+  const sel = document.getElementById('artigo-norma-sel');
+  const wrap = document.getElementById('artigo-assunto-wrap');
+  if(!assuntos.length){ wrap.style.display='none'; hideArtigoFrom('cap'); return; }
+  wrap.style.display='flex';
+  const prev=sel.value;
+  sel.innerHTML=assuntos.map(a=>`<option value="${a}"${a===prev?' selected':''}>${a}</option>`).join('');
+  if(!st.artigoNorma||!assuntos.includes(st.artigoNorma)) st.artigoNorma=assuntos[0];
+  sel.value=st.artigoNorma;
+  renderArtigoCapitulosFilter();
+}
+
+function renderArtigoCapitulosFilter(){
+  st.artigoNorma = document.getElementById('artigo-norma-sel').value;
+  // Get capitulos from artigoTopicos for this norma
+  const caps = [...new Set(artigoTopicos.filter(t=>t.norma===st.artigoNorma).map(t=>t.capitulo))].sort();
+  const sel = document.getElementById('artigo-cap-sel');
+  const wrap = document.getElementById('artigo-cap-wrap');
+  if(!caps.length){ wrap.style.display='none'; hideArtigoFrom('topico'); renderArtigoContent(); return; }
+  wrap.style.display='flex';
+  const prev=sel.value;
+  sel.innerHTML=caps.map(cap=>`<option value="${cap}"${cap===prev?' selected':''}>${cap}</option>`).join('');
+  if(!st.artigoCap||!caps.includes(st.artigoCap)) st.artigoCap=caps[0];
+  sel.value=st.artigoCap;
+  renderArtigoTopicosFilter();
+}
+
+function renderArtigoTopicosFilter(){
+  st.artigoCap = document.getElementById('artigo-cap-sel').value;
+  const topicos = [...new Set(artigoTopicos
+    .filter(t=>t.norma===st.artigoNorma&&t.capitulo===st.artigoCap)
+    .map(t=>t.topico))].sort();
+  const sel = document.getElementById('artigo-topico-sel');
+  const wrap = document.getElementById('artigo-topico-wrap');
+  if(!topicos.length){ wrap.style.display='none'; renderArtigoContent(); return; }
+  wrap.style.display='flex';
+  sel.innerHTML=['Todos os tópicos',...topicos].map((t,i)=>`<option value="${i===0?'all':t}"${(i===0?'all':t)===(st.artigoTopico||'all')?' selected':''}>${t}</option>`).join('');
+  if(!st.artigoTopico) st.artigoTopico='all';
+  sel.value=st.artigoTopico;
+  renderArtigoContent();
+}
+
+function hideArtigoFrom(from){
+  if(from==='cap'||from==='topico') document.getElementById('artigo-cap-wrap').style.display='none';
+  if(from==='topico') document.getElementById('artigo-topico-wrap').style.display='none';
+}
+
+function renderArtigoContent(){
+  st.artigoTopico = (document.getElementById('artigo-topico-sel')||{}).value || 'all';
+  let topicos = artigoTopicos.filter(t=>t.norma===st.artigoNorma);
+  if(st.artigoCap) topicos=topicos.filter(t=>t.capitulo===st.artigoCap);
+  if(st.artigoTopico&&st.artigoTopico!=='all') topicos=topicos.filter(t=>t.topico===st.artigoTopico);
+
+  const cont = document.getElementById('artigo-content');
+  if(!topicos.length||topicos.every(t=>!t.paragrafos||!t.paragrafos.length)){
+    cont.innerHTML=`<div class="artigo-empty">
+      <div style="font-size:36px;margin-bottom:.75rem">📖</div>
+      Nenhum tópico cadastrado ainda.<br>
+      <span style="font-size:12px">Clique em <strong>+ Adicionar tópico</strong> ou <strong>+ Importar tópicos (JSON)</strong> para começar.</span>
+    </div>`;
+    return;
+  }
+
+  cont.innerHTML = topicos.map(t=>{
+    const paras = (t.paragrafos||[]).map(p=>{
+      // Extract paragraph number from ref
+      const numMatch = p.ref.match(/§(\d[\d.]*)/);
+      const num = numMatch ? numMatch[1] : '?';
+      const qForPara = allQ().filter(q=>q.ref===p.ref&&q.norma===st.artigoNorma);
+      const hasQs = qForPara.length>0;
+      const answeredQs = qForPara.filter(q=>st.answers[q.id]!==undefined);
+      const correctQs = answeredQs.filter(q=>st.answers[q.id]===q.answer);
+      const qBadge = hasQs
+        ? `<span style="font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600;margin-left:6px;${answeredQs.length===0?'background:var(--violet-100);color:var(--violet)':'background:var(--green-100);color:var(--green-600)'}">
+            ${answeredQs.length===0?qForPara.length+' questão'+(qForPara.length!==1?'ões':''):correctQs.length+'/'+qForPara.length+' ✓'}
+           </span>`
+        : '';
+      return `<div class="artigo-para-card">
+        <div class="artigo-para-head">
+          <div style="display:flex;align-items:flex-start;flex:1">
+            <div class="artigo-para-num">${num}</div>
+            <div style="flex:1">
+              <div style="display:flex;align-items:center;flex-wrap:wrap;margin-bottom:4px">
+                <span class="artigo-para-ref">${p.ref}</span>${qBadge}
+              </div>
+              <div class="artigo-para-text" id="pt-${p.ref}" style="${(st.artigoHighlights[p.ref]||{}).color?'background:'+(st.artigoHighlights[p.ref].color)+';border-radius:6px;padding:4px 6px;':''}">${p.texto}</div>
+            </div>
+          </div>
+          <div class="artigo-para-actions">
+            <button class="artigo-icon-btn${st.flags[p.ref]?' fav-active':''}" onclick="artigoToggleFav('${p.ref}')" title="Favoritar">${st.flags[p.ref]?'⭐':'☆'} Favoritar</button>
+            <button class="artigo-icon-btn" onclick="artigoToggleNote('${p.ref}')" title="Inserir anotação">✏️ ${st.artigoNotes[p.ref]?'Editar nota':'Anotar'}</button>
+            <div class="artigo-highlight-wrap">
+              <button class="artigo-highlight-btn" onclick="toggleColorPicker('${p.ref}',event)">🖍 Destacar</button>
+              <div class="artigo-color-picker" id="cp-${p.ref}">
+                <div class="artigo-color-picker-title">Cor do destaque</div>
+                <div class="artigo-color-swatches">
+                  ${['#FEF08A','#BBF7D0','#BFDBFE','#FBCFE8','#FED7AA','#E9D5FF'].map(col=>`<div class="artigo-color-swatch${(st.artigoHighlights[p.ref]||{}).color===col?' selected':''}" style="background:${col}" onclick="applyHighlight('${p.ref}','${col}')"></div>`).join('')}
+                </div>
+                <div class="artigo-color-hex">
+                  <input type="text" id="hex-${p.ref}" placeholder="#FEF08A" value="${(st.artigoHighlights[p.ref]||{}).color||''}">
+                  <button onclick="applyHighlightHex('${p.ref}')">OK</button>
+                </div>
+              </div>
+            </div>
+            <button class="artigo-icon-btn del-btn" onclick="artigoDeletePara('${esc(t.norma)}','${esc(t.capitulo)}','${esc(t.topico)}','${esc(p.ref)}')" title="Excluir">🗑</button>
+          </div>
+        </div>
+        ${st.artigoNotes[p.ref] ? `<div class="artigo-note-inline">📝 ${st.artigoNotes[p.ref]}</div>` : ''}
+      ${st._noteRef===p.ref ? `<div style="padding:0 14px 12px">
+        <textarea class="artigo-note-input" id="anote-${p.ref}" rows="3" placeholder="Escreva sua anotação...">${st.artigoNotes[p.ref]||''}</textarea>
+        <div style="display:flex;gap:6px;margin-top:5px">
+          <button class="artigo-icon-btn" onclick="saveArtigoNote('${p.ref}')">Salvar</button>
+          <button class="artigo-icon-btn" onclick="cancelArtigoNote()">Cancelar</button>
+        </div>
+      </div>` : ''}
+      ${hasQs ? `<div style="padding:.25rem 1rem .75rem;display:flex;gap:6px;flex-wrap:wrap">
+          ${qForPara.map(q=>{
+            const ua=st.answers[q.id];
+            const dot=ua===undefined?'⬜':ua===q.answer?'🟢':'🔴';
+            return `<span style="font-size:12px;padding:3px 10px;border-radius:20px;background:var(--violet-50);color:var(--gray-600);cursor:pointer" onclick="openQuestaoById('${q.id}')">${dot} Q${allQ().indexOf(q)+1}</span>`;
+          }).join('')}
+        </div>` : ''}
+      </div>`;
+    }).join('');
+    return `<div class="artigo-topico-card">
+      <div class="artigo-topico-name">${t.topico}</div>
+      ${paras}
+    </div>`;
+  }).join('');
+}
+
+function artigoToggleFav(ref){
+  if(st.flags[ref]) delete st.flags[ref]; else st.flags[ref]=true;
+  save(); renderArtigoContent();
+}
+function artigoDeletePara(norma,cap,topico,ref){
+  const t = artigoTopicos.find(t=>t.norma===norma&&t.capitulo===cap&&t.topico===topico);
+  if(!t) return;
+  if(!confirm('Excluir este parágrafo?')) return;
+  t.paragrafos = t.paragrafos.filter(p=>p.ref!==ref);
+  if(!t.paragrafos.length) artigoTopicos = artigoTopicos.filter(x=>!(x.norma===norma&&x.capitulo===cap&&x.topico===topico));
+  save(); renderArtigoContent();
+}
+function artigoEditPara(norma,cap,topico,ref){
+  // Open add manual modal pre-filled
+  document.getElementById('artigo-add-mat').value = Object.entries(getMaterias()).find(([m,ns])=>(ns||[]).includes(norma))?.[0]||'';
+  document.getElementById('artigo-add-norma').value = norma;
+  document.getElementById('artigo-add-cap').value = cap;
+  document.getElementById('artigo-add-topico').value = topico;
+  const t = artigoTopicos.find(t=>t.norma===norma&&t.capitulo===cap&&t.topico===topico);
+  const p = t?.paragrafos.find(p=>p.ref===ref);
+  if(p) document.getElementById('artigo-add-paras').value = p.ref+' | '+p.texto;
+  openArtigoAddManual();
+}
+
+// Import/Add modal functions
+function openArtigoImport(){ document.getElementById('modal-artigo-import').classList.add('open'); }
+function openArtigoAddManual(){ document.getElementById('modal-artigo-add').classList.add('open'); setTimeout(()=>document.getElementById('artigo-add-mat').focus(),100); }
+
+function doArtigoImport(){
+  const raw = document.getElementById('artigo-import-json').value.trim();
+  const errEl = document.getElementById('artigo-import-error');
+  errEl.style.display='none';
+  try{
+    const data = JSON.parse(raw);
+    if(!Array.isArray(data)) throw new Error('JSON deve ser um array');
+    let added=0;
+    data.forEach((item,i)=>{
+      if(!item.norma||!item.capitulo||!item.topico||!Array.isArray(item.paragrafos))
+        throw new Error('Item '+(i+1)+' inválido: faltam campos (norma, capitulo, topico, paragrafos)');
+      const existing = artigoTopicos.find(t=>t.norma===item.norma&&t.capitulo===item.capitulo&&t.topico===item.topico);
+      if(existing){
+        // Merge paragraphs
+        item.paragrafos.forEach(p=>{
+          if(!existing.paragrafos.find(ep=>ep.ref===p.ref)) { existing.paragrafos.push(p); added++; }
+        });
+      } else {
+        artigoTopicos.push({norma:item.norma,capitulo:item.capitulo,topico:item.topico,paragrafos:item.paragrafos});
+        added += item.paragrafos.length;
+      }
+      // Also ensure matMap has this norma
+      const mat = document.getElementById('artigo-add-mat')?.value||'Geral';
+      if(item.norma && !Object.values(getMaterias()).flat().includes(item.norma)){
+        // auto-assign to first matching matéria or create
+        let found=false;
+        Object.entries(matMap).forEach(([m,ns])=>{ if((ns||[]).includes(item.norma)) found=true; });
+        if(!found){ if(!matMap['Geral']) matMap['Geral']=[]; if(!matMap['Geral'].includes(item.norma)) matMap['Geral'].push(item.norma); }
+      }
+    });
+    save();
+    closeModal('modal-artigo-import');
+    document.getElementById('artigo-import-json').value='';
+    alert(added+' parágrafo'+(added!==1?'s':'')+' importado'+(added!==1?'s':'')+'.');
+    renderArtigo();
+  }catch(e){
+    errEl.textContent='Erro: '+e.message;
+    errEl.style.display='block';
+  }
+}
+
+function doArtigoAddManual(){
+  const mat=document.getElementById('artigo-add-mat').value.trim();
+  const norma=document.getElementById('artigo-add-norma').value.trim();
+  const cap=document.getElementById('artigo-add-cap').value.trim();
+  const topico=document.getElementById('artigo-add-topico').value.trim();
+  const parasRaw=document.getElementById('artigo-add-paras').value.trim();
+  const errEl=document.getElementById('artigo-add-error');
+  errEl.style.display='none';
+  if(!norma||!cap||!topico||!parasRaw){ errEl.textContent='Preencha todos os campos.'; errEl.style.display='block'; return; }
+  const paragrafos = parasRaw.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
+    const sep=l.indexOf(' | ');
+    if(sep===-1) return null;
+    return {ref:l.substring(0,sep).trim(), texto:l.substring(sep+3).trim()};
+  }).filter(Boolean);
+  if(!paragrafos.length){ errEl.textContent='Nenhum parágrafo válido. Use o formato: ref | texto'; errEl.style.display='block'; return; }
+  const existing=artigoTopicos.find(t=>t.norma===norma&&t.capitulo===cap&&t.topico===topico);
+  if(existing){
+    paragrafos.forEach(p=>{ if(!existing.paragrafos.find(ep=>ep.ref===p.ref)) existing.paragrafos.push(p); });
+  } else {
+    artigoTopicos.push({norma,capitulo:cap,topico,paragrafos});
+  }
+  // Add norma to matMap
+  if(mat){
+    if(!matMap[mat]) matMap[mat]=[];
+    if(!matMap[mat].includes(norma)) matMap[mat].push(norma);
+  }
+  save();
+  closeModal('modal-artigo-add');
+  document.getElementById('artigo-add-paras').value='';
+  renderArtigo();
+}
+
+function artigoToggleNote(ref){
+  st._noteRef = st._noteRef===ref ? null : ref;
+  renderArtigoContent();
+  if(st._noteRef===ref) setTimeout(()=>{ const el=document.getElementById('anote-'+ref); if(el){el.focus();el.selectionStart=el.value.length;} },50);
+}
+function saveArtigoNote(ref){
+  const el=document.getElementById('anote-'+ref);
+  if(el) st.artigoNotes[ref]=el.value.trim()||undefined;
+  if(!st.artigoNotes[ref]) delete st.artigoNotes[ref];
+  st._noteRef=null;
+  save(); renderArtigoContent();
+}
+function cancelArtigoNote(){
+  st._noteRef=null;
+  renderArtigoContent();
+}
+function toggleColorPicker(ref,e){
+  e.stopPropagation();
+  const el=document.getElementById('cp-'+ref);
+  if(!el) return;
+  // Close all other pickers
+  document.querySelectorAll('.artigo-color-picker.open').forEach(p=>{ if(p.id!=='cp-'+ref) p.classList.remove('open'); });
+  el.classList.toggle('open');
+  st._colorPickerRef=el.classList.contains('open')?ref:null;
+}
+function applyHighlight(ref,color){
+  st.artigoHighlights[ref]={color};
+  save();
+  document.getElementById('cp-'+ref)?.classList.remove('open');
+  renderArtigoContent();
+}
+function applyHighlightHex(ref){
+  const hex=document.getElementById('hex-'+ref)?.value?.trim();
+  if(!hex) return;
+  const valid=/^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(hex);
+  if(!valid){ alert('Cor inválida. Use formato HEX: #RRGGBB'); return; }
+  applyHighlight(ref,hex);
+}
+// Close color pickers when clicking outside
+document.addEventListener('click',()=>{
+  document.querySelectorAll('.artigo-color-picker.open').forEach(p=>p.classList.remove('open'));
+});
+
+function clearArtigoTopicos(){
+  if(!confirm('Remover todos os tópicos cadastrados?')) return;
+  artigoTopicos=[];
+  save(); closeModal('modal-artigo-import'); renderArtigoContent();
+}
+
+function renderArtigoRefs(){ renderArtigoTopicosFilter(); }
+function renderArtigoCaps(){ renderArtigoCapitulosFilter(); }
+function renderArtigoQs(){ renderArtigoContent(); }
+
+/* ══════════════════════════════════════════
+   IMPORT
+══════════════════════════════════════════ */
+function openImportModal(){ document.getElementById('modal-import').classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function closeModalOutside(e,id){ if(e.target===document.getElementById(id)) closeModal(id); }
+
+function doImport(){
+  const raw = document.getElementById('imp-json').value.trim();
+  const errEl = document.getElementById('imp-error');
+  errEl.style.display='none';
+  try{
+    const data = JSON.parse(raw);
+    if(!Array.isArray(data)) throw new Error('O JSON deve ser um array [ ... ]');
+    const required = ['id','norma','capitulo','ref','answer','statement','explanation','trap'];
+    data.forEach((q,i)=>{
+      required.forEach(f=>{if(!q[f]) throw new Error(`Campo '${f}' ausente na questão ${i+1}`);});
+      if(q.answer!=='CERTO'&&q.answer!=='ERRADO') throw new Error(`'answer' deve ser CERTO ou ERRADO (questão ${i+1})`);
+    });
+    const existing = new Set(allQ().map(q=>q.id));
+    const newQ = data.filter(q=>!existing.has(q.id));
+    importedQ = [...importedQ,...newQ];
+    // Auto-assign matéria if fields provided
+    const mat = document.getElementById('imp-materia').value.trim();
+    const ass = document.getElementById('imp-assunto').value.trim();
+    if(mat && ass){
+      if(!matMap[mat]) matMap[mat]=[];
+      if(!matMap[mat].includes(ass)) matMap[mat].push(ass);
+    }
+    save();
+    closeModal('modal-import');
+    document.getElementById('imp-json').value='';
+    alert(`${newQ.length} questão${newQ.length!==1?'ões':''} importada${newQ.length!==1?'s':''}${data.length-newQ.length>0?' ('+( data.length-newQ.length)+' duplicata(s) ignorada(s))':''}.`);
+    renderHome();
+  }catch(e){
+    errEl.textContent='Erro: '+e.message;
+    errEl.style.display='block';
+  }
+}
+function clearImported(){
+  if(!confirm('Remover todas as questões importadas?')) return;
+  importedQ=[];
+  save(); closeModal('modal-import'); renderHome();
+}
+
+/* ══════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════ */
+function esc(s){ return (s||'').replace(/['"&<>]/g,c=>({'\'':'&#39;','"':'&quot;','&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+
+/* ══ SUPABASE SYNC ══════════════════════════════════════════ */
+const SB_URL = 'https://usgsgxxzdbukghhnrjla.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzZ3NneHh6ZGJ1a2doaG5yamxhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIzODg2MzAsImV4cCI6MjA5Nzk2NDYzMH0.LGUnTmNZ97nUT9jW8Lh69cJmZjyD4rUqF1QKsamDk7w';
+
+function getUserId(){
+  let uid = localStorage.getItem('malu_uid');
+  if(!uid){ uid='u_'+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('malu_uid',uid); }
+  return uid;
+}
+const USER_ID = getUserId();
+
+async function sb(method,table,body,params){
+  const url=SB_URL+'/rest/v1/'+table+(params?'?'+params:'');
+  try{
+    const res=await fetch(url,{method,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'resolution=merge-duplicates':''},body:body?JSON.stringify(body):undefined});
+    if(!res.ok) return null;
+    try{return await res.json();}catch(_){return null;}
+  }catch(_){return null;}
+}
+
+function showSync(s){
+  let el=document.getElementById('sync-ind');
+  if(!el){el=document.createElement('div');el.id='sync-ind';el.style.cssText='position:fixed;bottom:1rem;right:1rem;font-size:11px;font-weight:600;padding:5px 12px;border-radius:20px;z-index:999;transition:opacity .3s;font-family:Inter,sans-serif';document.body.appendChild(el);}
+  if(s==='saving'){el.style.background='#EDE9FE';el.style.color='#7C3AED';el.textContent='⟳ Sincronizando...';el.style.opacity='1';}
+  else if(s==='ok'){el.style.background='#DCFCE7';el.style.color='#16A34A';el.textContent='✓ Sincronizado';el.style.opacity='1';setTimeout(()=>{el.style.opacity='0';},2000);}
+  else{el.style.background='#FEE2E2';el.style.color='#DC2626';el.textContent='✗ Erro';el.style.opacity='1';setTimeout(()=>{el.style.opacity='0';},3000);}
+}
+
+let _syncT=null;
+function scheduleSyncPush(){ clearTimeout(_syncT); _syncT=setTimeout(syncPush,1000); }
+
+async function syncPush(){
+  showSync('saving');
+  const uid=USER_ID, enc=encodeURIComponent;
+  try{
+    const ops=[];
+    const ansRows=Object.entries(st.answers).map(([qid,ans])=>({user_id:uid,question_id:qid,answer:ans}));
+    if(ansRows.length) ops.push(sb('POST','answers',ansRows));
+    const histPushed=JSON.parse(localStorage.getItem('malu_hp')||'{}');
+    const histRows=[];
+    Object.entries(st.history).forEach(([qid,arr])=>{
+      const p=histPushed[qid]||0;
+      arr.slice(p).forEach(h=>histRows.push({user_id:uid,question_id:qid,answer:h.answer,correct:h.correct}));
+    });
+    if(histRows.length){ ops.push(sb('POST','history',histRows)); Object.entries(st.history).forEach(([qid,arr])=>{histPushed[qid]=arr.length;}); localStorage.setItem('malu_hp',JSON.stringify(histPushed)); }
+    const flagRows=Object.keys(st.flags).map(qid=>({user_id:uid,question_id:qid}));
+    ops.push(sb('DELETE','flags',null,'user_id=eq.'+enc(uid)));
+    if(flagRows.length) ops.push(sb('POST','flags',flagRows));
+    const noteRows=Object.entries(st.notes).map(([qid,txt])=>({user_id:uid,question_id:qid,content:txt}));
+    ops.push(sb('DELETE','notes',null,'user_id=eq.'+enc(uid)));
+    if(noteRows.length) ops.push(sb('POST','notes',noteRows));
+    const delRows=Object.keys(st.deleted).map(qid=>({user_id:uid,question_id:qid}));
+    ops.push(sb('DELETE','deleted_questions',null,'user_id=eq.'+enc(uid)));
+    if(delRows.length) ops.push(sb('POST','deleted_questions',delRows));
+    const revRows=Object.keys(st.revealed).map(qid=>({user_id:uid,question_id:qid}));
+    ops.push(sb('DELETE','revealed',null,'user_id=eq.'+enc(uid)));
+    if(revRows.length) ops.push(sb('POST','revealed',revRows));
+    const impRows=importedQ.map(q=>({user_id:uid,question_id:q.id,data:q}));
+    ops.push(sb('DELETE','imported_questions',null,'user_id=eq.'+enc(uid)));
+    if(impRows.length) ops.push(sb('POST','imported_questions',impRows));
+    ops.push(sb('POST','mat_map',[{user_id:uid,data:matMap}]));
+    ops.push(sb('POST','artigo_topicos',[{user_id:uid,data:artigoTopicos}]));
+    const anRows=Object.entries(st.artigoNotes).map(([ref,txt])=>({user_id:uid,ref,content:txt}));
+    ops.push(sb('DELETE','artigo_notes',null,'user_id=eq.'+enc(uid)));
+    if(anRows.length) ops.push(sb('POST','artigo_notes',anRows));
+    const hlRows=Object.entries(st.artigoHighlights).map(([ref,h])=>({user_id:uid,ref,color:h.color}));
+    ops.push(sb('DELETE','artigo_highlights',null,'user_id=eq.'+enc(uid)));
+    if(hlRows.length) ops.push(sb('POST','artigo_highlights',hlRows));
+    await Promise.all(ops);
+    showSync('ok');
+  }catch(e){console.error('sync push',e);showSync('error');}
+}
+
+async function syncPull(){
+  showSync('saving');
+  const uid=USER_ID, enc=encodeURIComponent;
+  try{
+    const [ansD,histD,flagD,noteD,delD,revD,impD,matD,artD,anD,hlD]=await Promise.all([
+      sb('GET','answers',null,'user_id=eq.'+enc(uid)+'&select=question_id,answer'),
+      sb('GET','history',null,'user_id=eq.'+enc(uid)+'&select=question_id,answer,correct&order=id.asc'),
+      sb('GET','flags',null,'user_id=eq.'+enc(uid)+'&select=question_id'),
+      sb('GET','notes',null,'user_id=eq.'+enc(uid)+'&select=question_id,content'),
+      sb('GET','deleted_questions',null,'user_id=eq.'+enc(uid)+'&select=question_id'),
+      sb('GET','revealed',null,'user_id=eq.'+enc(uid)+'&select=question_id'),
+      sb('GET','imported_questions',null,'user_id=eq.'+enc(uid)+'&select=data'),
+      sb('GET','mat_map',null,'user_id=eq.'+enc(uid)+'&select=data'),
+      sb('GET','artigo_topicos',null,'user_id=eq.'+enc(uid)+'&select=data'),
+      sb('GET','artigo_notes',null,'user_id=eq.'+enc(uid)+'&select=ref,content'),
+      sb('GET','artigo_highlights',null,'user_id=eq.'+enc(uid)+'&select=ref,color'),
+    ]);
+    if(ansD) ansD.forEach(r=>{st.answers[r.question_id]=r.answer;});
+    if(histD){const h={};histD.forEach(r=>{if(!h[r.question_id])h[r.question_id]=[];h[r.question_id].push({answer:r.answer,correct:r.correct});});st.history=h;}
+    if(flagD) flagD.forEach(r=>{st.flags[r.question_id]=true;});
+    if(noteD) noteD.forEach(r=>{st.notes[r.question_id]=r.content;});
+    if(delD) delD.forEach(r=>{st.deleted[r.question_id]=true;});
+    if(revD) revD.forEach(r=>{st.revealed[r.question_id]=true;});
+    if(impD&&impD.length) importedQ=impD.map(r=>r.data);
+    if(matD&&matD.length) matMap=matD[0].data;
+    if(artD&&artD.length) artigoTopicos=artD[0].data;
+    if(anD) anD.forEach(r=>{st.artigoNotes[r.ref]=r.content;});
+    if(hlD) hlD.forEach(r=>{st.artigoHighlights[r.ref]={color:r.color};});
+    save();
+    showSync('ok');
+  }catch(e){console.error('sync pull',e);showSync('error');}
+}
+
+load();
+
+// Build default matMap from Q
+const _nm = {};
+Q.forEach(q=>{ if(!_nm[q.norma]) _nm[q.norma]=[]; });
+if(!artigoTopicos) artigoTopicos=[];
+if(!Object.keys(matMap).length){
+  matMap["Auditoria e NBCs"] = [...new Set(Q.map(q=>q.norma))];
+}
+
+// Pull from Supabase then render
+syncPull().then(()=>navTo('inicio'));
+
+</script>
+
+<!-- ADD MATÉRIA MODAL -->
+<div class="modal-overlay" id="modal-add-materia" onclick="closeModalOutside(event,'modal-add-materia')">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-title">Adicionar matéria</div>
+    <div class="add-modal-field">
+      <label class="add-modal-label">Nome da matéria</label>
+      <input class="add-modal-input" id="add-materia-input" type="text" placeholder="ex: Direito Administrativo" onkeydown="if(event.key==='Enter') confirmAddMateria()">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-primary" onclick="confirmAddMateria()">Adicionar</button>
+      <button class="btn-modal-ghost" onclick="closeModal('modal-add-materia')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ARTIGO IMPORT MODAL -->
+<div class="modal-overlay" id="modal-artigo-import" onclick="closeModalOutside(event,'modal-artigo-import')">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-title">Importar tópicos via JSON</div>
+    <div class="modal-sub">Cole um array JSON com os tópicos e seus parágrafos.</div>
+    <div class="artigo-modal-schema">[
+  {
+    "norma": "NAT/TCU",
+    "capitulo": "Capítulo 3 — Normas Relativas ao Planejamento e à Execução",
+    "topico": "Planejamento Geral das Auditorias do TCU",
+    "paragrafos": [
+      { "ref": "NAT, §63", "texto": "O planejamento geral de curto prazo..." },
+      { "ref": "NAT, §64", "texto": "O planejamento geral deve alinhar..." }
+    ]
+  }
+]</div>
+    <textarea class="modal-textarea" id="artigo-import-json" placeholder="Cole o JSON aqui..." style="height:130px"></textarea>
+    <div class="modal-error" id="artigo-import-error"></div>
+    <div class="modal-actions">
+      <button class="btn-modal-primary" onclick="doArtigoImport()">Importar</button>
+      <button class="btn-modal-ghost" onclick="closeModal('modal-artigo-import')">Cancelar</button>
+      <button class="btn-modal-danger" onclick="clearArtigoTopicos()">Remover todos</button>
+    </div>
+  </div>
+</div>
+
+<!-- ARTIGO ADD MANUAL MODAL -->
+<div class="modal-overlay" id="modal-artigo-add" onclick="closeModalOutside(event,'modal-artigo-add')">
+  <div class="modal" style="max-width:500px">
+    <div class="modal-title">Adicionar tópico</div>
+    <div class="add-modal-field">
+      <label class="add-modal-label">Matéria</label>
+      <input class="add-modal-input" id="artigo-add-mat" type="text" placeholder="ex: Auditoria e NBCs">
+    </div>
+    <div class="add-modal-field">
+      <label class="add-modal-label">Assunto (norma)</label>
+      <input class="add-modal-input" id="artigo-add-norma" type="text" placeholder="ex: NAT/TCU">
+    </div>
+    <div class="add-modal-field">
+      <label class="add-modal-label">Subassunto (capítulo)</label>
+      <input class="add-modal-input" id="artigo-add-cap" type="text" placeholder="ex: Capítulo 3 — Normas Relativas ao Planejamento e à Execução">
+    </div>
+    <div class="add-modal-field">
+      <label class="add-modal-label">Nome do tópico</label>
+      <input class="add-modal-input" id="artigo-add-topico" type="text" placeholder="ex: Planejamento Geral das Auditorias do TCU">
+    </div>
+    <div class="add-modal-field">
+      <label class="add-modal-label">Parágrafos (um por linha: ref | texto)</label>
+      <textarea class="modal-textarea" id="artigo-add-paras" placeholder="NAT, §63 | O planejamento geral...&#10;NAT, §64 | O planejamento geral deve alinhar..." style="height:120px;font-size:12px"></textarea>
+    </div>
+    <div class="modal-error" id="artigo-add-error"></div>
+    <div class="modal-actions">
+      <button class="btn-modal-primary" onclick="doArtigoAddManual()">Salvar tópico</button>
+      <button class="btn-modal-ghost" onclick="closeModal('modal-artigo-add')">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
